@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Electro Movil iCame</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #0070fa, #ff0000);
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      background: linear-gradient(to bottom right, #0070fa, #ff0000);
+      color: white;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .product h3 {
+      margin: 10px 0 5px;
+    }
+
+    .product p {
+      margin: 0;
+    }
+
+    .buy-button {
+      margin-top: 10px;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .buy-button:hover {
+      background-color: #218838;
+    }
+
+    .sold-product p span.price {
+      text-decoration: line-through;
+      color: #ddd;
+    }
+
+    .sold-product p span.sold-label {
+      color: yellow;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    footer {
+      background: #1a1a1a;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>SPECIAL OFFERS 🔥</h2>
+    <div class="product-grid">
+
+      <!-- samsung z flip 6 - SOLD -->
+      <div class="product sold-product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43ppfgap4/Samsung%20Galaxy%20Z%20Flip%206.jpg" alt="samsung Z flip 6" />
+        <h3>Samsung Z Flip 6</h3>
+        <p><span class="price">€1,100</span><span class="sold-label">SOLD</span></p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="Samsung Z Flip 6" />
+          <input type="hidden" name="amount" value="1100.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- samsung s20 ultra - SOLD -->
+      <div class="product sold-product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43psnxhqe/Samsung%20Galaxy%20S20%20Ultra%20Mockup%20-%20Mockups.jpg" alt="Samsung S20 Ultra" />
+        <h3>Samsung S20 Ultra</h3>
+        <p><span class="price">€1,100</span><span class="sold-label">SOLD</span></p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="Samsung S20 Ultra" />
+          <input type="hidden" name="amount" value="1100.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- iPhone 16 - SOLD -->
+      <div class="product sold-product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43pgtb3s5/Straight%20Talk%20Apple%20iPhone%2016%20Plus.jpg" alt="iPhone 16" />
+        <h3>iPhone 16</h3>
+        <p><span class="price">€1,000</span><span class="sold-label">SOLD</span></p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="iPhone 16" />
+          <input type="hidden" name="amount" value="1000.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- macBook air 13 - SOLD -->
+      <div class="product sold-product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43psnxhqe/Kuzy%20Compatible%20with%20MacBook%20Air.jpg" alt="MacBook Air 13" />
+        <h3>MacBook Air 13</h3>
+        <p><span class="price">€1,500</span><span class="sold-label">SOLD</span></p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="MacBook Air 13" />
+          <input type="hidden" name="amount" value="1500.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- HP Laptop -->
+      <div class="product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43pgvspry/Laptops.jpg" alt="HP Laptop" />
+        <h3>HP Laptop 15</h3>
+        <p>€549.00</p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="HP Laptop 15" />
+          <input type="hidden" name="amount" value="549.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- redmi note 13 -->
+      <div class="product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43pjxhy43/Redmi%20Note%2013%20Pro.jpg" alt="Redmi Note 13" />
+        <h3>Redmi Note 13</h3>
+        <p>€300.00</p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="Redmi Note 13" />
+          <input type="hidden" name="amount" value="300.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- Apple Watch S2 -->
+      <div class="product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43pqa3m8n/Apple%20Watch%20SE%202nd%20Gen.jpg" alt="Apple Watch S2" />
+        <h3>Apple Watch S2</h3>
+        <p>€300.00</p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="Apple Watch S2" />
+          <input type="hidden" name="amount" value="300.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+      <!-- MacBook Air 13 -->
+      <div class="product">
+        <img src="https://uploads.onecompiler.io/43pgtf5aq/43pqa3m8n/Kuzy%20Compatible%20with%20MacBook%20Air.jpg" alt="MacBook Air 13" />
+        <h3>MacBook Air 13</h3>
+        <p>€900.00</p>
+        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
+          <input type="hidden" name="item_name" value="MacBook Air 13" />
+          <input type="hidden" name="amount" value="900.00" />
+          <input type="hidden" name="currency_code" value="EUR" />
+          <input type="submit" class="buy-button" value="Buy Now" />
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Electro Movil iCame – All rights reserved<br />
+    Murcia, Totana – Postal Code 30850 | Email: mohamedredazekraoui@gmail.com
+  </footer>
+</body>
+</html>
