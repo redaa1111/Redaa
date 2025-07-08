@@ -88,18 +88,63 @@
     <h2>SPECIAL OFFERS 🔥</h2>
     <div class="product-grid">
 
-      <!-- xiaomi 15 ultra - SOLD -->
-      <div class="product sold-product">
-        <img src="https://uploads.onecompiler.io/43pgtf5aq/43py8v66q/Xiaomi%2015%20Ultra_%20ya%20conocemos%20sus%20principales%20especificaciones.jpg" alt="samsung Z flip 6" />
-        <h3>xiaomi 15 ultra</h3>
-        <p><span class="price">€750,00</span><span class="sold-label">SOLD</span></p>
-        <form action="mailto:mhamedredazekraoui@gmail.com" method="post" target="_blank">
-          <input type="hidden" name="item_name" value="xiaomi 15 ultra" />
-          <input type="hidden" name="amount" value="1100.00" />
-          <input type="hidden" name="currency_code" value="EUR" />
-          <input type="submit" class="buy-button" value="Buy Now" />
-        </form>
-      </div>
+      <style>
+  .product {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    text-align: center;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+  }
+
+  .product img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .price-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1em;
+  }
+
+  .buy-button {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #0070fa;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .buy-button:hover {
+    background-color: #0059c2;
+  }
+</style>
+
+<div class="product">
+  <img src="https://example.com/product.jpg" alt="Product Name">
+  <div class="price-overlay">€999.00</div>
+  <h3>Product Name</h3>
+  <a href="mailto:mohamedredazekraoui@gmail.com?subject=Order%20Request&body=Hello,%20I%20would%20like%20to%20order%20Product%20Name%20for%20€999.00" class="buy-button">Buy Now</a>
+</div>
+
+      
 
       <!-- samsung s20 ultra - SOLD -->
       <div class="product sold-product">
