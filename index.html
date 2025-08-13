@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reda Follows Zineb Game</title>
+<title>Reda and Zineb Game</title>
 <style>
   body {
     margin: 0;
@@ -15,25 +15,25 @@
   }
 
   .character {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     position: absolute;
-    top: 50px;
-    left: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    color: white;
+    font-size: 32px;
     border-radius: 50%;
+    cursor: pointer;
   }
 
   #reda {
     background-color: red;
+    color: white;
   }
 
   #zineb {
     background-color: pink;
+    color: white;
   }
 
   #message {
@@ -42,15 +42,15 @@
     width: 100%;
     text-align: center;
     font-size: 24px;
-    color: blue;
+    color: green;
   }
 </style>
 </head>
 <body>
 
-<div id="message">Catch Zineb!</div>
-<div id="reda" class="character">R</div>
-<div id="zineb" class="character">Z</div>
+<div id="message">Help Reda find Zineb!</div>
+<div id="reda" class="character">🤖</div>
+<div id="zineb" class="character">👧</div>
 
 <script>
   const reda = document.getElementById('reda');
@@ -78,8 +78,8 @@
     if (e.key === 'ArrowRight') zX += step;
 
     // Keep inside window
-    zX = Math.max(0, Math.min(window.innerWidth - 50, zX));
-    zY = Math.max(0, Math.min(window.innerHeight - 50, zY));
+    zX = Math.max(0, Math.min(window.innerWidth - 60, zX));
+    zY = Math.max(0, Math.min(window.innerHeight - 60, zY));
 
     zineb.style.left = zX + 'px';
     zineb.style.top = zY + 'px';
@@ -97,7 +97,8 @@
 
     // Check collision
     if (Math.abs(rX - zX) < 50 && Math.abs(rY - zY) < 50) {
-      message.textContent = "Zineb is crying 😢";
+      message.textContent = "Zineb is happy 😄";
+      zineb.textContent = "😊";
     }
 
     requestAnimationFrame(follow);
