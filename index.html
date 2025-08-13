@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reptile Interactive Cursor</title>
+  <title>Zineb Reptile Cursor</title>
   <style>
     :root {
       --bg: #0e1726;
       --fg: #c8d1e6;
-      --accent: #86efac;
+      --accent: #ffb3d9; /* Soft pink for Zineb theme */
     }
     html, body { height: 100%; }
     body {
       margin: 0;
       background: radial-gradient(1200px 800px at 70% 20%, #121f33, var(--bg));
       color: var(--fg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial;
       overflow: hidden;
     }
     canvas { display: block; width: 100vw; height: 100vh; }
@@ -31,29 +31,26 @@
 <body>
   <canvas id="c"></canvas>
   <div class="hint">
-    <b>Reptile Cursor</b> — move your mouse / finger.<br>
+    <b>Zineb's Reptile Cursor</b> — move your mouse / finger.<br>
     Left click: wiggle.  Middle: pause.  Right: reverse.
   </div>
   <script>
-  // ===== Input helpers (matches the snippet from your screenshot) =====
   const Input = { mouse: { x: 0, y: 0, left: false, middle: false, right: false }, down:false };
   document.addEventListener("mousemove", (e) => { Input.mouse.x = e.clientX; Input.mouse.y = e.clientY; });
   document.addEventListener("mousedown", function(event) {
-    if ((event.button == 0)) { Input.mouse.left = true; }
-    if ((event.button == 1)) { Input.mouse.middle = true; }
-    if ((event.button == 2)) { Input.mouse.right = true; }
+    if (event.button == 0) Input.mouse.left = true;
+    if (event.button == 1) Input.mouse.middle = true;
+    if (event.button == 2) Input.mouse.right = true;
     Input.down = true;
   });
   document.addEventListener("mouseup", function(event) {
-    if ((event.button == 0)) { Input.mouse.left = false; }
-    if ((event.button == 1)) { Input.mouse.middle = false; }
-    if ((event.button == 2)) { Input.mouse.right = false; }
+    if (event.button == 0) Input.mouse.left = false;
+    if (event.button == 1) Input.mouse.middle = false;
+    if (event.button == 2) Input.mouse.right = false;
     Input.down = false;
   });
-  // disable context menu so right click can be used interactively
   window.addEventListener('contextmenu', e => e.preventDefault());
 
-  // ===== Canvas setup =====
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   function resize(){
@@ -67,7 +64,6 @@
   addEventListener('resize', resize, { passive: true });
   resize();
 
-  // Touch support => treat first touch as mouse
   addEventListener('touchstart', (e) => {
     const t = e.touches[0];
     Input.mouse.x = t.clientX; Input.mouse.y = t.clientY; Input.mouse.left = true; Input.down = true;
@@ -78,59 +74,48 @@
   }, { passive: true });
   addEventListener('touchend', () => { Input.mouse.left = false; Input.down = false; }, { passive: true });
 
-  // ===== Reptile model =====
-  const SEGMENTS = 48;          // total vertebrae
-  const SEG_LEN = 12;           // distance between vertebrae
-  const BASE_RADIUS = 10;       // head radius (tail tapers)
-  const LEG_LEN = 14;           // leg length
-  const LEGS_EVERY = 1;         // draw legs for each segment (can use 2 to reduce)
-  const WIGGLE_FREQ = 6.0;      // wiggle frequency
-  const WIGGLE_MAG = 0.45;      // wiggle magnitude
+  const SEGMENTS = 48;
+  const SEG_LEN = 12;
+  const BASE_RADIUS = 10;
+  const LEG_LEN = 14;
+  const LEGS_EVERY = 1;
+  const WIGGLE_FREQ = 6.0;
+  const WIGGLE_MAG = 0.45;
 
-  const body = Array.from({length: SEGMENTS}, (_, i) => ({ x: innerWidth*0.5, y: innerHeight*0.5, ang: 0 }));
-  let t = 0;
-  let reverse = false;
-  let paused = false;
+  const body = Array.from({length: SEGMENTS}, () => ({ x: innerWidth/2, y: innerHeight/2, ang: 0 }));
+  let t = 0, reverse = false, paused = false;
+  let reversedOnce = false, pausedOnce = false, wiggleMag = WIGGLE_MAG * 0.2;
 
   function update(dt){
-    // interactions
     if (Input.mouse.left) wiggleMag = WIGGLE_MAG; else wiggleMag = WIGGLE_MAG * 0.2;
     if (Input.mouse.middle && !pausedOnce){ paused = !paused; pausedOnce = true; } else if(!Input.mouse.middle){ pausedOnce = false; }
     if (Input.mouse.right && !reversedOnce){ reverse = !reverse; reversedOnce = true; } else if(!Input.mouse.right){ reversedOnce = false; }
     if (paused) return;
 
-    // head eases toward pointer with slight wiggle
     const head = body[0];
     const dx = Input.mouse.x - head.x;
     const dy = Input.mouse.y - head.y;
     const dist = Math.hypot(dx, dy) || 1;
     const ease = Math.min(0.25, 120 / (dist + 200));
     const dir = Math.atan2(dy, dx);
-
-    // add a sinusoidal wiggle perpendicular to direction
     const wobble = Math.sin(t * WIGGLE_FREQ) * wiggleMag;
     head.x += Math.cos(dir) * dist * ease + Math.cos(dir + Math.PI/2) * wobble;
     head.y += Math.sin(dir) * dist * ease + Math.sin(dir + Math.PI/2) * wobble;
     head.ang = dir;
 
-    // inverse kinematics for the rest of the chain
     for (let i = 1; i < body.length; i++){
-      const prev = body[i-1];
-      const cur = body[i];
+      const prev = body[i-1], cur = body[i];
       const a = Math.atan2(cur.y - prev.y, cur.x - prev.x);
-      const na = reverse ? a + 0.02 : a - 0.02; // slight bend for organic look
+      const na = reverse ? a + 0.02 : a - 0.02;
       cur.x = prev.x + Math.cos(na) * -SEG_LEN;
       cur.y = prev.y + Math.sin(na) * -SEG_LEN;
       cur.ang = na;
     }
   }
 
-  let reversedOnce = false, pausedOnce = false, wiggleMag = WIGGLE_MAG * 0.2;
-
   function draw(){
     ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-    // soft glow trail
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < body.length; i++){
@@ -138,53 +123,46 @@
       const r = BASE_RADIUS * (1 - i / body.length) * 0.9 + 3;
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI*2);
-      ctx.strokeStyle = 'rgba(134, 239, 172, 0.08)';
+      ctx.strokeStyle = 'rgba(255, 179, 217, 0.08)';
       ctx.lineWidth = 2;
       ctx.stroke();
     }
     ctx.restore();
 
-    // spine
     ctx.beginPath();
     for (let i = 0; i < body.length; i++){
       const p = body[i];
       if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
     }
-    ctx.strokeStyle = 'rgba(200, 209, 230, 0.22)';
+    ctx.strokeStyle = 'rgba(255, 179, 217, 0.22)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // vertebrae + legs
     for (let i = 0; i < body.length; i++){
       const p = body[i];
       const r = BASE_RADIUS * (1 - i / body.length) * 0.75 + 1.5;
-
-      // vertebra (ring)
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI*2);
-      ctx.strokeStyle = 'rgba(200, 209, 230, 0.55)';
+      ctx.strokeStyle = 'rgba(255, 179, 217, 0.55)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // little legs (alternating)
       if (i % LEGS_EVERY === 0){
         const nx = Math.cos(p.ang + Math.PI/2);
         const ny = Math.sin(p.ang + Math.PI/2);
         const phase = (i % 2 === 0 ? 1 : -1) * (Math.sin(t*WIGGLE_FREQ + i*0.3) * 0.4 + 0.6);
         const len = LEG_LEN * (1 - i / body.length) * phase;
-
         ctx.beginPath();
         ctx.moveTo(p.x + nx * (r*0.6), p.y + ny * (r*0.6));
         ctx.lineTo(p.x + nx * (r*0.6 + len), p.y + ny * (r*0.6 + len));
         ctx.moveTo(p.x - nx * (r*0.6), p.y - ny * (r*0.6));
         ctx.lineTo(p.x - nx * (r*0.6 + len), p.y - ny * (r*0.6 + len));
-        ctx.strokeStyle = 'rgba(200, 209, 230, 0.45)';
+        ctx.strokeStyle = 'rgba(255, 179, 217, 0.45)';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
     }
 
-    // head detail (eyes)
     const h = body[0];
     const eyeOff = 4;
     const ex = Math.cos(h.ang + Math.PI/2) * eyeOff;
@@ -192,8 +170,14 @@
     ctx.beginPath();
     ctx.arc(h.x + ex, h.y + ey, 1.6, 0, Math.PI*2);
     ctx.arc(h.x - ex, h.y - ey, 1.6, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(134,239,172,0.9)';
+    ctx.fillStyle = 'rgba(255,179,217,0.9)';
     ctx.fill();
+
+    // Draw Zineb's name floating above head
+    ctx.font = "bold 18px Arial";
+    ctx.fillStyle = "rgba(255,179,217,0.95)";
+    ctx.textAlign = "center";
+    ctx.fillText("Zineb", h.x, h.y - 20);
   }
 
   let last = performance.now();
@@ -207,6 +191,3 @@
   </script>
 </body>
 </html>
-
-
-
