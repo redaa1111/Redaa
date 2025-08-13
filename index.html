@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reda Follows Zineb Game</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background-color: #cce7ff;
+    overflow: hidden;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  .character {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    border-radius: 50%;
+  }
+
+  #reda {
+    background-color: red;
+  }
+
+  #zineb {
+    background-color: pink;
+  }
+
+  #message {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: blue;
+  }
+</style>
+</head>
+<body>
+
+<div id="message">Catch Zineb!</div>
+<div id="reda" class="character">R</div>
+<div id="zineb" class="character">Z</div>
+
+<script>
+  const reda = document.getElementById('reda');
+  const zineb = document.getElementById('zineb');
+  const message = document.getElementById('message');
+
+  // Zineb initial position
+  let zX = 300;
+  let zY = 200;
+  zineb.style.left = zX + 'px';
+  zineb.style.top = zY + 'px';
+
+  // Reda initial position
+  let rX = 50;
+  let rY = 50;
+  reda.style.left = rX + 'px';
+  reda.style.top = rY + 'px';
+
+  // Zineb movement with arrow keys
+  document.addEventListener('keydown', (e) => {
+    const step = 20;
+    if (e.key === 'ArrowUp') zY -= step;
+    if (e.key === 'ArrowDown') zY += step;
+    if (e.key === 'ArrowLeft') zX -= step;
+    if (e.key === 'ArrowRight') zX += step;
+
+    // Keep inside window
+    zX = Math.max(0, Math.min(window.innerWidth - 50, zX));
+    zY = Math.max(0, Math.min(window.innerHeight - 50, zY));
+
+    zineb.style.left = zX + 'px';
+    zineb.style.top = zY + 'px';
+  });
+
+  function follow() {
+    const speed = 2;
+    if (rX < zX) rX += speed;
+    if (rX > zX) rX -= speed;
+    if (rY < zY) rY += speed;
+    if (rY > zY) rY -= speed;
+
+    reda.style.left = rX + 'px';
+    reda.style.top = rY + 'px';
+
+    // Check collision
+    if (Math.abs(rX - zX) < 50 && Math.abs(rY - zY) < 50) {
+      message.textContent = "Zineb is crying 😢";
+    }
+
+    requestAnimationFrame(follow);
+  }
+
+  follow();
+</script>
+
+</body>
+</html>
