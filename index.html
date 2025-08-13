@@ -1,175 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zineb Realistic Moon & Comets</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zineb Moon — Comet Tail Game</title>
 <style>
-  html, body {
-    margin: 0; padding: 0;
-    overflow: hidden; background: black;
-    height: 100%;
+  :root {
+    --ui: #eaf4ff;
+    --hint-bg: rgba(255,255,255,0.06);
+    --hint-br: rgba(255,255,255,0.12);
   }
-  canvas { display: block; }
+  html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  .hud {
+    position: fixed; top: 12px; left: 12px; z-index: 10;
+    padding: 10px 14px; border-radius: 12px; user-select: none;
+    color: var(--ui); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial;
+    background: var(--hint-bg); border: 1px solid var(--hint-br); backdrop-filter: blur(6px);
+  }
+  .hud .title { font-weight: 700; letter-spacing: 0.2px; }
+  .hud .score { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .hud .small { font-size: 12px; opacity: 0.9; line-height: 1.25; margin-top: 6px; }
 </style>
 </head>
 <body>
 <canvas id="space"></canvas>
+<div class="hud">
+  <div class="title">🌕 Zineb Moon — Comet Tails</div>
+  <div class="score">Score: <span id="score">0</span></div>
+  <div class="small">
+    Move mouse to lure comets.<br/>
+    Left click: boost • Middle: pause • Right: reverse
+  </div>
+</div>
+
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
 
 function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  canvas.width = Math.floor(innerWidth * dpr);
+  canvas.height = Math.floor(innerHeight * dpr);
+  canvas.style.width = innerWidth + "px";
+  canvas.style.height = innerHeight + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
-window.addEventListener("resize", resize);
+addEventListener("resize", resize, { passive: true });
 resize();
 
-// Input
+// ===== Input =====
 const Input = { x: innerWidth/2, y: innerHeight/2, left:false, middle:false, right:false };
-window.addEventListener("mousemove", e=>{ Input.x = e.clientX; Input.y = e.clientY; });
-window.addEventListener("mousedown", e=>{
-  if(e.button===0) Input.left=true;
-  if(e.button===1) Input.middle=true;
-  if(e.button===2) Input.right=true;
+addEventListener("mousemove", e => { Input.x = e.clientX; Input.y = e.clientY; });
+addEventListener("mousedown", e => {
+  if (e.button===0) Input.left = true;
+  if (e.button===1) Input.middle = true;
+  if (e.button===2) Input.right = true;
 });
-window.addEventListener("mouseup", e=>{
-  if(e.button===0) Input.left=false;
-  if(e.button===1) Input.middle=false;
-  if(e.button===2) Input.right=false;
+addEventListener("mouseup", e => {
+  if (e.button===0) Input.left = false;
+  if (e.button===1) Input.middle = false;
+  if (e.button===2) Input.right = false;
 });
-window.addEventListener("contextmenu", e=>e.preventDefault());
+addEventListener("touchstart", e => {
+  const t = e.touches[0];
+  Input.x = t.clientX; Input.y = t.clientY; Input.left = true;
+}, { passive: true });
+addEventListener("touchmove", e => {
+  const t = e.touches[0];
+  Input.x = t.clientX; Input.y = t.clientY;
+}, { passive: true });
+addEventListener("touchend", () => { Input.left = false; }, { passive: true });
+addEventListener("contextmenu", e => e.preventDefault());
 
-let paused=false, reverse=false, pausedOnce=false, reversedOnce=false;
+let paused = false, reverse = false, pausedOnce = false, reversedOnce = false;
 
-// Stars
-const stars=[];
-for(let i=0;i<400;i++){
-  stars.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    radius: Math.random()*1.5+0.5,
-    alpha: Math.random(),
-    twinkleSpeed: Math.random()*0.05+0.01
-  });
-}
-
-// Moon
-let moon = { x: canvas.width*0.3, y: canvas.height*0.3, r:80, dx:0.2, dy:0.15 };
-
-// Comets
-function createComet(){
-  return { x:Math.random()*canvas.width, y:Math.random()*canvas.height,
-           vx:(Math.random()-0.5)*2, vy:(Math.random()-0.5)*2,
-           color:["#ffffff","#ffddaa","#aaddff","#ffd1dc","#ffee88"][Math.floor(Math.random()*5)],
-           trail:[] };
-}
-const comets=[];
-for(let i=0;i<12;i++) comets.push(createComet());
-
-function update(dt){
-  if(Input.middle && !pausedOnce){ paused=!paused; pausedOnce=true; }
-  if(!Input.middle) pausedOnce=false;
-  if(Input.right && !reversedOnce){ reverse=!reverse; reversedOnce=true; }
-  if(!Input.right) reversedOnce=false;
-  if(paused) return;
-
-  // Moon movement
-  moon.x+=moon.dx;
-  moon.y+=moon.dy;
-  if(moon.x-moon.r<0 || moon.x+moon.r>canvas.width) moon.dx*=-1;
-  if(moon.y-moon.r<0 || moon.y+moon.r>canvas.height) moon.dy*=-1;
-
-  // Stars twinkle
-  for(let s of stars){
-    s.alpha += s.twinkleSpeed*(Math.random()<0.5?1:-1);
-    if(s.alpha<0) s.alpha=0;
-    if(s.alpha>1) s.alpha=1;
-  }
-
-  // Comets
-  for(let c of comets){
-    let speed = Input.left?3:1.5;
-    if(reverse) speed*=-1;
-    let dx = Input.x - c.x, dy = Input.y - c.y;
-    let dist = Math.hypot(dx,dy)||1;
-    c.vx += (dx/dist)*0.05;
-    c.vy += (dy/dist)*0.05;
-    c.vx*=0.95; c.vy*=0.95;
-    c.x+=c.vx*speed; c.y+=c.vy*speed;
-    c.trail.push({x:c.x,y:c.y});
-    if(c.trail.length>25) c.trail.shift();
+// ===== Stars (realistic-ish) =====
+const stars = [];
+function seedStars() {
+  stars.length = 0;
+  const base = Math.floor((innerWidth * innerHeight) / 3500); // density scales with area
+  for (let i = 0; i < base; i++) {
+    stars.push({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      r: Math.pow(Math.random(), 3) * 1.8 + 0.3, // many tiny, few bigger
+      a: Math.random() * 0.6 + 0.2,
+      tw: Math.random() * 0.8 + 0.2,
+      phase: Math.random() * Math.PI * 2,
+      hue: Math.random() < 0.2 ? (Math.random() < 0.5 ? 220 : 35) : 0 // some blue/yellow stars
+    });
   }
 }
+seedStars();
 
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+// ===== Moon (with texture + glow) =====
+let score = 0;
+const moon = {
+  x: innerWidth * 0.35,
+  y: innerHeight * 0.35,
+  r: Math.max(70, Math.min(120, Math.min(innerWidth, innerHeight) * 0.09)),
+  dx: 0.22, dy: 0.18,
+  alive: true,
+  craters: [],
+};
+function seedCraters() {
+  const n = 16;
+  moon.craters = [];
+  for (let i = 0; i < n; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const rad = Math.random() * moon.r * 0.72;
+    const cx = moon.x + Math.cos(ang) * rad;
+    const cy = moon.y + Math.sin(ang) * rad;
+    const rr = Math.random() * 8 + 3;
+    moon.craters.push({ x: cx, y: cy, r: rr, a: Math.random() * 0.35 + 0.2 });
+  }
+}
+seedCraters();
 
-  // Draw stars
-  for(let s of stars){
+// Explosion particles
+let particles = [];
+function explodeMoon() {
+  moon.alive = false;
+  const N = 180;
+  particles.length = 0;
+  for (let i = 0; i < N; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const rad = (Math.random() ** 0.6) * moon.r; // more near center
+    const px = moon.x + Math.cos(ang) * rad;
+    const py = moon.y + Math.sin(ang) * rad;
+    const spd = 1.2 + Math.random() * 2.6;
+    particles.push({
+      x: px, y: py,
+      vx: Math.cos(ang) * spd,
+      vy: Math.sin(ang) * spd,
+      life: 1.0, // fades to 0
+      size: Math.random() * 3 + 1.5,
+      hue: 45 + Math.random() * 20 // warm debris
+    });
+  }
+  score++;
+  scoreEl.textContent = score;
+  // schedule respawn
+  setTimeout(respawnMoon, 2200);
+}
+function respawnMoon() {
+  moon.r = Math.max(70, Math.min(120, Math.min(innerWidth, innerHeight) * 0.09));
+  moon.x = Math.random() * (innerWidth - 2 * moon.r) + moon.r;
+  moon.y = Math.random() * (innerHeight - 2 * moon.r) + moon.r;
+  moon.dx = (Math.random() * 0.4 + 0.18) * (Math.random() < 0.5 ? 1 : -1);
+  moon.dy = (Math.random() * 0.4 + 0.18) * (Math.random() < 0.5 ? 1 : -1);
+  moon.alive = true;
+  seedCraters();
+}
+
+// ===== Comets with BIG tails =====
+const cometColors = [
+  "#ffffff", // neutral white
+  "#ffdda6", // warm dust
+  "#a3c8ff", // blue ion
+  "#fff38a", // yellowish
+  "#ffc4e1"  // soft pink accent
+];
+
+function makeComet() {
+  return {
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2,
+    color: cometColors[Math.floor(Math.random() * cometColors.length)],
+    trail: [],
+    maxTrail: 90 + Math.floor(Math.random() * 50), // BIG tails
+    size: 3 + Math.random() * 1.5
+  };
+}
+const comets = Array.from({ length: 14 }, makeComet);
+
+// ===== Update & Draw =====
+function update(dt) {
+  // toggles
+  if (Input.middle && !pausedOnce) { paused = !paused; pausedOnce = true; }
+  if (!Input.middle) pausedOnce = false;
+  if (Input.right && !reversedOnce) { reverse = !reverse; reversedOnce = true; }
+  if (!Input.right) reversedOnce = false;
+
+  if (paused) return;
+
+  // stars twinkle
+  for (const s of stars) {
+    s.phase += dt * s.tw;
+    s.a = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(s.phase));
+  }
+
+  // move moon (if alive)
+  if (moon.alive) {
+    moon.x += moon.dx;
+    moon.y += moon.dy;
+    if (moon.x - moon.r < 0 || moon.x + moon.r > innerWidth) moon.dx *= -1;
+    if (moon.y - moon.r < 0 || moon.y + moon.r > innerHeight) moon.dy *= -1;
+  }
+
+  // explosion particles update
+  for (const p of particles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= 0.99;
+    p.vy *= 0.99;
+    p.life -= dt * 0.4; // fade speed
+  }
+  particles = particles.filter(p => p.life > 0);
+
+  // comets seek cursor
+  for (const c of comets) {
+    let speed = (Input.left ? 3.2 : 1.8) * (reverse ? -1 : 1);
+    const dx = Input.x - c.x, dy = Input.y - c.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    // steering
+    c.vx += (dx / dist) * 0.08;
+    c.vy += (dy / dist) * 0.08;
+    // damping
+    c.vx *= 0.96; c.vy *= 0.96;
+    // move
+    c.x += c.vx * speed;
+    c.y += c.vy * speed;
+
+    // wrap around screen edges for continuous flow
+    if (c.x < -50) c.x = innerWidth + 50;
+    if (c.x > innerWidth + 50) c.x = -50;
+    if (c.y < -50) c.y = innerHeight + 50;
+    if (c.y > innerHeight + 50) c.y = -50;
+
+    // record trail
+    c.trail.push({ x: c.x, y: c.y });
+    if (c.trail.length > c.maxTrail) c.trail.shift();
+
+    // check collision with moon
+    if (moon.alive) {
+      const mdx = c.x - moon.x, mdy = c.y - moon.y;
+      if (Math.hypot(mdx, mdy) < moon.r + c.size) {
+        explodeMoon();
+      }
+    }
+  }
+}
+
+function drawStars() {
+  // subtle vignette background
+  const g = ctx.createRadialGradient(innerWidth*0.5, innerHeight*0.5, Math.min(innerWidth, innerHeight)*0.1,
+                                     innerWidth*0.5, innerHeight*0.5, Math.max(innerWidth, innerHeight)*0.8);
+  g.addColorStop(0, "#02040a");
+  g.addColorStop(1, "#000000");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // stars
+  for (const s of stars) {
     ctx.beginPath();
-    ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${s.alpha})`;
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    if (s.hue) {
+      ctx.fillStyle = `hsla(${s.hue}, 80%, 80%, ${s.a})`;
+    } else {
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+    }
     ctx.fill();
-  }
 
-  // Draw moon
-  const gradient = ctx.createRadialGradient(moon.x,moon.y,moon.r*0.1, moon.x,moon.y,moon.r);
-  gradient.addColorStop(0,"#fff");
-  gradient.addColorStop(0.3,"#fffde0");
-  gradient.addColorStop(0.6,"#fff5b3");
-  gradient.addColorStop(1,"#a0a0a0");
+    // tiny cross twinkle for a few bright ones
+    if (s.r > 1.6) {
+      ctx.globalAlpha = s.a * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(s.x - 4, s.y); ctx.lineTo(s.x + 4, s.y);
+      ctx.moveTo(s.x, s.y - 4); ctx.lineTo(s.x, s.y + 4);
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+function drawMoon() {
+  if (!moon.alive) return;
+
+  // outer glow
+  const glow = ctx.createRadialGradient(moon.x, moon.y, moon.r * 0.6, moon.x, moon.y, moon.r * 1.6);
+  glow.addColorStop(0, "rgba(255, 247, 210, 0.26)");
+  glow.addColorStop(1, "rgba(255, 247, 210, 0.0)");
+  ctx.fillStyle = glow;
   ctx.beginPath();
-  ctx.arc(moon.x,moon.y,moon.r,0,Math.PI*2);
-  ctx.fillStyle=gradient;
+  ctx.arc(moon.x, moon.y, moon.r * 1.6, 0, Math.PI * 2);
   ctx.fill();
 
-  // Moon surface craters (simple circles)
-  for(let i=0;i<10;i++){
-    let angle=Math.random()*Math.PI*2;
-    let rad=Math.random()*moon.r*0.7;
-    let cx=moon.x+Math.cos(angle)*rad;
-    let cy=moon.y+Math.sin(angle)*rad;
-    let cr=Math.random()*6+2;
+  // body gradient
+  const grad = ctx.createRadialGradient(moon.x - moon.r * 0.25, moon.y - moon.r * 0.25, moon.r * 0.2,
+                                        moon.x, moon.y, moon.r);
+  grad.addColorStop(0, "#ffffff");
+  grad.addColorStop(0.35, "#fff6d6");
+  grad.addColorStop(0.7, "#e1d9c4");
+  grad.addColorStop(1, "#b9b6b0");
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(moon.x, moon.y, moon.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  // craters (soft)
+  for (const c of moon.craters) {
+    const cg = ctx.createRadialGradient(c.x, c.y, c.r * 0.2, c.x, c.y, c.r);
+    cg.addColorStop(0, `rgba(120,120,120,${0.25 * c.a})`);
+    cg.addColorStop(1, `rgba(0,0,0,0)`);
+    ctx.fillStyle = cg;
     ctx.beginPath();
-    ctx.arc(cx,cy,cr,0,Math.PI*2);
-    ctx.fillStyle="rgba(180,180,180,0.3)";
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Zineb text
-  ctx.font="bold 28px Arial";
-  ctx.fillStyle="#222";
-  ctx.textAlign="center";
-  ctx.fillText("Zineb",moon.x,moon.y+8);
+  // name
+  ctx.font = `700 ${Math.max(18, moon.r * 0.35)}px system-ui, -apple-system, Segoe UI, Arial`;
+  ctx.fillStyle = "rgba(30,30,30,0.9)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Zineb", moon.x, moon.y);
+}
 
-  // Draw comets
-  for(let c of comets){
-    for(let i=0;i<c.trail.length;i++){
-      let p=c.trail[i];
-      let alpha=i/c.trail.length;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,2,0,Math.PI*2);
-      ctx.fillStyle=c.color.replace(")",`,${alpha})`).replace("rgb","rgba");
-      ctx.fill();
-    }
+function drawExplosion() {
+  if (particles.length === 0) return;
+  for (const p of particles) {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = `hsla(${p.hue}, 90%, 70%, ${p.life})`;
     ctx.beginPath();
-    ctx.arc(c.x,c.y,3,0,Math.PI*2);
-    ctx.fillStyle=c.color;
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
     ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawComets() {
+  for (const c of comets) {
+    // tail as many short segments with fading alpha
+    for (let i = 1; i < c.trail.length; i++) {
+      const p0 = c.trail[i - 1], p1 = c.trail[i];
+      const a = i / c.trail.length; // tail alpha ramp
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.strokeStyle = toRGBA(c.color, a * 0.6);
+      ctx.lineWidth = Math.max(1, c.size * (1 - a) + 0.5);
+      ctx.stroke();
+    }
+
+    // soft head glow
+    ctx.save();
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = c.color;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.size + 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = c.color;
+    ctx.fill();
+    ctx.restore();
   }
 }
 
-let last=performance.now();
-function loop(now){
-  let dt=(now-last)/1000;
-  last=now;
+function toRGBA(hex, alpha) {
+  // #rrggbb → rgba(r,g,b,a)
+  const n = hex.replace('#','');
+  const r = parseInt(n.slice(0,2), 16);
+  const g = parseInt(n.slice(2,4), 16);
+  const b = parseInt(n.slice(4,6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function draw(now, dt) {
+  drawStars();
+  drawMoon();
+  drawExplosion();
+  drawComets();
+}
+
+// ===== Main loop =====
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+
   update(dt);
-  draw();
+  draw(now, dt);
+
   requestAnimationFrame(loop);
 }
-loop();
+requestAnimationFrame(loop);
+
+// Re-seed stars on orientation/size change
+addEventListener('resize', () => {
+  seedStars();
+});
+
 </script>
 </body>
 </html>
