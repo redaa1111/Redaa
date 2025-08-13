@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zineb Moon & Comets</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zineb Realistic Moon & Comets</title>
 <style>
   html, body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
+    overflow: hidden; background: black;
     height: 100%;
-    overflow: hidden;
-    background: black;
   }
-  canvas {
-    display: block;
-  }
+  canvas { display: block; }
 </style>
 </head>
 <body>
@@ -30,143 +26,145 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-// ===== Input handling =====
-const Input = { x: innerWidth/2, y: innerHeight/2, left: false, middle: false, right: false };
-window.addEventListener("mousemove", e => { Input.x = e.clientX; Input.y = e.clientY; });
-window.addEventListener("mousedown", e => {
-  if(e.button===0) Input.left = true;
-  if(e.button===1) Input.middle = true;
-  if(e.button===2) Input.right = true;
+// Input
+const Input = { x: innerWidth/2, y: innerHeight/2, left:false, middle:false, right:false };
+window.addEventListener("mousemove", e=>{ Input.x = e.clientX; Input.y = e.clientY; });
+window.addEventListener("mousedown", e=>{
+  if(e.button===0) Input.left=true;
+  if(e.button===1) Input.middle=true;
+  if(e.button===2) Input.right=true;
 });
-window.addEventListener("mouseup", e => {
-  if(e.button===0) Input.left = false;
-  if(e.button===1) Input.middle = false;
-  if(e.button===2) Input.right = false;
+window.addEventListener("mouseup", e=>{
+  if(e.button===0) Input.left=false;
+  if(e.button===1) Input.middle=false;
+  if(e.button===2) Input.right=false;
 });
-window.addEventListener("contextmenu", e => e.preventDefault());
+window.addEventListener("contextmenu", e=>e.preventDefault());
 
-let paused = false, reverse = false, pausedOnce = false, reversedOnce = false;
+let paused=false, reverse=false, pausedOnce=false, reversedOnce=false;
 
-// ===== Stars =====
-const stars = [];
-for (let i = 0; i < 200; i++) {
+// Stars
+const stars=[];
+for(let i=0;i<400;i++){
   stars.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * 1.5,
-    twinkle: Math.random() * Math.PI * 2
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    radius: Math.random()*1.5+0.5,
+    alpha: Math.random(),
+    twinkleSpeed: Math.random()*0.05+0.01
   });
 }
 
-// ===== Moon =====
-let moon = {
-  x: canvas.width * 0.7,
-  y: canvas.height * 0.3,
-  r: 60,
-  dx: 0.3,
-  dy: 0.2
-};
+// Moon
+let moon = { x: canvas.width*0.3, y: canvas.height*0.3, r:80, dx:0.2, dy:0.15 };
 
-// ===== Comets =====
-function createComet() {
-  return {
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 2,
-    vy: (Math.random() - 0.5) * 2,
-    color: ["#ffffff", "#ffddaa", "#aaddff", "#ffd1dc"][Math.floor(Math.random()*4)],
-    trail: []
-  };
+// Comets
+function createComet(){
+  return { x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+           vx:(Math.random()-0.5)*2, vy:(Math.random()-0.5)*2,
+           color:["#ffffff","#ffddaa","#aaddff","#ffd1dc","#ffee88"][Math.floor(Math.random()*5)],
+           trail:[] };
 }
-const comets = [];
-for (let i = 0; i < 10; i++) comets.push(createComet());
+const comets=[];
+for(let i=0;i<12;i++) comets.push(createComet());
 
-function update(dt) {
-  if (Input.middle && !pausedOnce) { paused = !paused; pausedOnce = true; }
-  if (!Input.middle) pausedOnce = false;
-  if (Input.right && !reversedOnce) { reverse = !reverse; reversedOnce = true; }
-  if (!Input.right) reversedOnce = false;
-
-  if (paused) return;
+function update(dt){
+  if(Input.middle && !pausedOnce){ paused=!paused; pausedOnce=true; }
+  if(!Input.middle) pausedOnce=false;
+  if(Input.right && !reversedOnce){ reverse=!reverse; reversedOnce=true; }
+  if(!Input.right) reversedOnce=false;
+  if(paused) return;
 
   // Moon movement
-  moon.x += moon.dx;
-  moon.y += moon.dy;
-  if (moon.x - moon.r < 0 || moon.x + moon.r > canvas.width) moon.dx *= -1;
-  if (moon.y - moon.r < 0 || moon.y + moon.r > canvas.height) moon.dy *= -1;
+  moon.x+=moon.dx;
+  moon.y+=moon.dy;
+  if(moon.x-moon.r<0 || moon.x+moon.r>canvas.width) moon.dx*=-1;
+  if(moon.y-moon.r<0 || moon.y+moon.r>canvas.height) moon.dy*=-1;
 
-  // Stars twinkling
-  for (let s of stars) {
-    s.twinkle += dt;
+  // Stars twinkle
+  for(let s of stars){
+    s.alpha += s.twinkleSpeed*(Math.random()<0.5?1:-1);
+    if(s.alpha<0) s.alpha=0;
+    if(s.alpha>1) s.alpha=1;
   }
-
-  // Comet movement
-  for (let c of comets) {
-    let speed = Input.left ? 3 : 1.5;
-    if (reverse) speed *= -1;
-    let dx = Input.x - c.x;
-    let dy = Input.y - c.y;
-    let dist = Math.hypot(dx, dy) || 1;
-    c.vx += (dx/dist) * 0.05;
-    c.vy += (dy/dist) * 0.05;
-    c.vx *= 0.95;
-    c.vy *= 0.95;
-    c.x += c.vx * speed;
-    c.y += c.vy * speed;
-
-    // trail
-    c.trail.push({ x: c.x, y: c.y });
-    if (c.trail.length > 20) c.trail.shift();
-  }
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Stars
-  for (let s of stars) {
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.size * (1 + Math.sin(s.twinkle) * 0.3), 0, Math.PI*2);
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-  }
-
-  // Moon
-  ctx.beginPath();
-  ctx.arc(moon.x, moon.y, moon.r, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(255, 245, 200, 0.9)";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
-  ctx.stroke();
-
-  ctx.font = "bold 24px Arial";
-  ctx.fillStyle = "#000";
-  ctx.textAlign = "center";
-  ctx.fillText("Zineb", moon.x, moon.y + 8);
 
   // Comets
-  for (let c of comets) {
-    // trail
-    for (let i = 0; i < c.trail.length; i++) {
-      let p = c.trail[i];
-      let alpha = i / c.trail.length;
+  for(let c of comets){
+    let speed = Input.left?3:1.5;
+    if(reverse) speed*=-1;
+    let dx = Input.x - c.x, dy = Input.y - c.y;
+    let dist = Math.hypot(dx,dy)||1;
+    c.vx += (dx/dist)*0.05;
+    c.vy += (dy/dist)*0.05;
+    c.vx*=0.95; c.vy*=0.95;
+    c.x+=c.vx*speed; c.y+=c.vy*speed;
+    c.trail.push({x:c.x,y:c.y});
+    if(c.trail.length>25) c.trail.shift();
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Draw stars
+  for(let s of stars){
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${s.alpha})`;
+    ctx.fill();
+  }
+
+  // Draw moon
+  const gradient = ctx.createRadialGradient(moon.x,moon.y,moon.r*0.1, moon.x,moon.y,moon.r);
+  gradient.addColorStop(0,"#fff");
+  gradient.addColorStop(0.3,"#fffde0");
+  gradient.addColorStop(0.6,"#fff5b3");
+  gradient.addColorStop(1,"#a0a0a0");
+  ctx.beginPath();
+  ctx.arc(moon.x,moon.y,moon.r,0,Math.PI*2);
+  ctx.fillStyle=gradient;
+  ctx.fill();
+
+  // Moon surface craters (simple circles)
+  for(let i=0;i<10;i++){
+    let angle=Math.random()*Math.PI*2;
+    let rad=Math.random()*moon.r*0.7;
+    let cx=moon.x+Math.cos(angle)*rad;
+    let cy=moon.y+Math.sin(angle)*rad;
+    let cr=Math.random()*6+2;
+    ctx.beginPath();
+    ctx.arc(cx,cy,cr,0,Math.PI*2);
+    ctx.fillStyle="rgba(180,180,180,0.3)";
+    ctx.fill();
+  }
+
+  // Zineb text
+  ctx.font="bold 28px Arial";
+  ctx.fillStyle="#222";
+  ctx.textAlign="center";
+  ctx.fillText("Zineb",moon.x,moon.y+8);
+
+  // Draw comets
+  for(let c of comets){
+    for(let i=0;i<c.trail.length;i++){
+      let p=c.trail[i];
+      let alpha=i/c.trail.length;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
-      ctx.fillStyle = c.color.replace(")", `, ${alpha})`).replace("rgb", "rgba");
+      ctx.arc(p.x,p.y,2,0,Math.PI*2);
+      ctx.fillStyle=c.color.replace(")",`,${alpha})`).replace("rgb","rgba");
       ctx.fill();
     }
-    // head
     ctx.beginPath();
-    ctx.arc(c.x, c.y, 3, 0, Math.PI*2);
-    ctx.fillStyle = c.color;
+    ctx.arc(c.x,c.y,3,0,Math.PI*2);
+    ctx.fillStyle=c.color;
     ctx.fill();
   }
 }
 
-let last = performance.now();
-function loop(now) {
-  let dt = (now - last) / 1000;
-  last = now;
+let last=performance.now();
+function loop(now){
+  let dt=(now-last)/1000;
+  last=now;
   update(dt);
   draw();
   requestAnimationFrame(loop);
@@ -175,4 +173,3 @@ loop();
 </script>
 </body>
 </html>
-
