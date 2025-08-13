@@ -3,53 +3,34 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zineb Butterfly Cursor</title>
+<title>Zineb Moon & Comets</title>
 <style>
-  :root {
-    --bg: #0e1726;
-    --fg: #ffd6f0;
-    --accent: #ff8dc7;
-  }
-  html, body { height: 100%; }
-  body {
+  html, body {
     margin: 0;
-    background: radial-gradient(circle at 70% 20%, #121f33, var(--bg));
-    color: var(--fg);
-    font-family: sans-serif;
+    padding: 0;
+    height: 100%;
     overflow: hidden;
+    background: black;
   }
-  canvas { display: block; width: 100vw; height: 100vh; }
-  .hint {
-    position: fixed; top: 10px; left: 10px; padding: 10px 14px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px; backdrop-filter: blur(6px);
-    font-size: 14px; line-height: 1.2;
-    color: var(--fg);
+  canvas {
+    display: block;
   }
-  .hint b { color: var(--accent); }
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div class="hint">
-  <b>Zineb's Butterfly Cursor</b> — move your mouse.<br>
-  Left click: flap faster.  Middle: pause.  Right: reverse.
-</div>
+<canvas id="space"></canvas>
 <script>
-const canvas = document.getElementById("c");
+const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
 function resize() {
-  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-  canvas.width = innerWidth * dpr;
-  canvas.height = innerHeight * dpr;
-  canvas.style.width = innerWidth + "px";
-  canvas.style.height = innerHeight + "px";
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 window.addEventListener("resize", resize);
 resize();
 
+// ===== Input handling =====
 const Input = { x: innerWidth/2, y: innerHeight/2, left: false, middle: false, right: false };
 window.addEventListener("mousemove", e => { Input.x = e.clientX; Input.y = e.clientY; });
 window.addEventListener("mousedown", e => {
@@ -65,81 +46,133 @@ window.addEventListener("mouseup", e => {
 window.addEventListener("contextmenu", e => e.preventDefault());
 
 let paused = false, reverse = false, pausedOnce = false, reversedOnce = false;
-let t = 0;
+
+// ===== Stars =====
+const stars = [];
+for (let i = 0; i < 200; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 1.5,
+    twinkle: Math.random() * Math.PI * 2
+  });
+}
+
+// ===== Moon =====
+let moon = {
+  x: canvas.width * 0.7,
+  y: canvas.height * 0.3,
+  r: 60,
+  dx: 0.3,
+  dy: 0.2
+};
+
+// ===== Comets =====
+function createComet() {
+  return {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2,
+    color: ["#ffffff", "#ffddaa", "#aaddff", "#ffd1dc"][Math.floor(Math.random()*4)],
+    trail: []
+  };
+}
+const comets = [];
+for (let i = 0; i < 10; i++) comets.push(createComet());
 
 function update(dt) {
   if (Input.middle && !pausedOnce) { paused = !paused; pausedOnce = true; }
   if (!Input.middle) pausedOnce = false;
-
   if (Input.right && !reversedOnce) { reverse = !reverse; reversedOnce = true; }
   if (!Input.right) reversedOnce = false;
 
-  if (!paused) t += dt * (reverse ? -1 : 1);
+  if (paused) return;
+
+  // Moon movement
+  moon.x += moon.dx;
+  moon.y += moon.dy;
+  if (moon.x - moon.r < 0 || moon.x + moon.r > canvas.width) moon.dx *= -1;
+  if (moon.y - moon.r < 0 || moon.y + moon.r > canvas.height) moon.dy *= -1;
+
+  // Stars twinkling
+  for (let s of stars) {
+    s.twinkle += dt;
+  }
+
+  // Comet movement
+  for (let c of comets) {
+    let speed = Input.left ? 3 : 1.5;
+    if (reverse) speed *= -1;
+    let dx = Input.x - c.x;
+    let dy = Input.y - c.y;
+    let dist = Math.hypot(dx, dy) || 1;
+    c.vx += (dx/dist) * 0.05;
+    c.vy += (dy/dist) * 0.05;
+    c.vx *= 0.95;
+    c.vy *= 0.95;
+    c.x += c.vx * speed;
+    c.y += c.vy * speed;
+
+    // trail
+    c.trail.push({ x: c.x, y: c.y });
+    if (c.trail.length > 20) c.trail.shift();
+  }
 }
 
-function drawButterfly(x, y, ang) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(ang);
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  let flapSpeed = Input.left ? 10 : 5;
-  let wingAngle = Math.sin(t * flapSpeed) * 0.5;
+  // Stars
+  for (let s of stars) {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size * (1 + Math.sin(s.twinkle) * 0.3), 0, Math.PI*2);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+  }
 
-  // Body
+  // Moon
   ctx.beginPath();
-  ctx.fillStyle = "#ff8dc7";
-  ctx.ellipse(0, 0, 4, 20, 0, 0, Math.PI*2);
+  ctx.arc(moon.x, moon.y, moon.r, 0, Math.PI*2);
+  ctx.fillStyle = "rgba(255, 245, 200, 0.9)";
   ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+  ctx.stroke();
 
-  // Left Wing
-  ctx.save();
-  ctx.rotate(wingAngle);
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.quadraticCurveTo(-50, -50, -20, 0);
-  ctx.quadraticCurveTo(-50, 50, 0, 0);
-  ctx.fillStyle = "rgba(255, 182, 219, 0.8)";
-  ctx.fill();
-  ctx.restore();
-
-  // Right Wing
-  ctx.save();
-  ctx.rotate(-wingAngle);
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.quadraticCurveTo(50, -50, 20, 0);
-  ctx.quadraticCurveTo(50, 50, 0, 0);
-  ctx.fillStyle = "rgba(255, 182, 219, 0.8)";
-  ctx.fill();
-  ctx.restore();
-
-  // Name text
-  ctx.font = "bold 16px Arial";
-  ctx.fillStyle = "#fff";
+  ctx.font = "bold 24px Arial";
+  ctx.fillStyle = "#000";
   ctx.textAlign = "center";
-  ctx.fillText("Zineb", 0, -30);
+  ctx.fillText("Zineb", moon.x, moon.y + 8);
 
-  ctx.restore();
+  // Comets
+  for (let c of comets) {
+    // trail
+    for (let i = 0; i < c.trail.length; i++) {
+      let p = c.trail[i];
+      let alpha = i / c.trail.length;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+      ctx.fillStyle = c.color.replace(")", `, ${alpha})`).replace("rgb", "rgba");
+      ctx.fill();
+    }
+    // head
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, 3, 0, Math.PI*2);
+    ctx.fillStyle = c.color;
+    ctx.fill();
+  }
 }
 
-let bx = innerWidth/2, by = innerHeight/2;
+let last = performance.now();
 function loop(now) {
-  ctx.clearRect(0, 0, innerWidth, innerHeight);
-  const dt = 0.016;
-
+  let dt = (now - last) / 1000;
+  last = now;
   update(dt);
-
-  // Smooth follow
-  bx += (Input.x - bx) * 0.1;
-  by += (Input.y - by) * 0.1;
-
-  // Draw butterfly
-  const angle = Math.atan2(Input.y - by, Input.x - bx) + Math.PI/2;
-  drawButterfly(bx, by, angle);
-
+  draw();
   requestAnimationFrame(loop);
 }
 loop();
 </script>
 </body>
 </html>
+
