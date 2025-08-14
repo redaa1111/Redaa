@@ -1,111 +1,108 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reda and Zineb Game</title>
-<style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background-color: #cce7ff;
-    overflow: hidden;
-    position: relative;
-    font-family: Arial, sans-serif;
-  }
-
-  .character {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  #reda {
-    background-color: red;
-    color: white;
-  }
-
-  #zineb {
-    background-color: pink;
-    color: white;
-  }
-
-  #message {
-    position: absolute;
-    top: 10px;
-    width: 100%;
-    text-align: center;
-    font-size: 24px;
-    color: green;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Social Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e9ebee;
+    }
+    /* Header bar */
+    header {
+      background-color: #1877f2;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+    }
+    header input {
+      margin-left: 20px;
+      padding: 6px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      width: 250px;
+    }
+    /* Layout */
+    .container {
+      display: flex;
+      margin-top: 10px;
+      padding: 0 10px;
+    }
+    .sidebar {
+      width: 20%;
+      padding: 10px;
+    }
+    .feed {
+      width: 60%;
+      padding: 10px;
+    }
+    .rightbar {
+      width: 20%;
+      padding: 10px;
+    }
+    /* Post box */
+    .post {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .post h3 {
+      margin: 0 0 5px;
+    }
+    .post p {
+      margin: 0;
+    }
+    /* Sidebar items */
+    .sidebar div, .rightbar div {
+      background: white;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
 
-<div id="message">Help Reda find Zineb!</div>
-<div id="reda" class="character">🤖</div>
-<div id="zineb" class="character">👧</div>
+<header>
+  <h1>MySocial</h1>
+  <input type="text" placeholder="Search" />
+</header>
 
-<script>
-  const reda = document.getElementById('reda');
-  const zineb = document.getElementById('zineb');
-  const message = document.getElementById('message');
+<div class="container">
+  <div class="sidebar">
+    <div>Profile</div>
+    <div>Friends</div>
+    <div>Groups</div>
+  </div>
 
-  // Zineb initial position
-  let zX = 300;
-  let zY = 200;
-  zineb.style.left = zX + 'px';
-  zineb.style.top = zY + 'px';
+  <div class="feed">
+    <div class="post">
+      <h3>John Doe</h3>
+      <p>Hello! This is my first post on MySocial.</p>
+    </div>
+    <div class="post">
+      <h3>Jane Smith</h3>
+      <p>Just enjoying a sunny day ☀️</p>
+    </div>
+  </div>
 
-  // Reda initial position
-  let rX = 50;
-  let rY = 50;
-  reda.style.left = rX + 'px';
-  reda.style.top = rY + 'px';
-
-  // Zineb movement with arrow keys
-  document.addEventListener('keydown', (e) => {
-    const step = 20;
-    if (e.key === 'ArrowUp') zY -= step;
-    if (e.key === 'ArrowDown') zY += step;
-    if (e.key === 'ArrowLeft') zX -= step;
-    if (e.key === 'ArrowRight') zX += step;
-
-    // Keep inside window
-    zX = Math.max(0, Math.min(window.innerWidth - 60, zX));
-    zY = Math.max(0, Math.min(window.innerHeight - 60, zY));
-
-    zineb.style.left = zX + 'px';
-    zineb.style.top = zY + 'px';
-  });
-
-  function follow() {
-    const speed = 2;
-    if (rX < zX) rX += speed;
-    if (rX > zX) rX -= speed;
-    if (rY < zY) rY += speed;
-    if (rY > zY) rY -= speed;
-
-    reda.style.left = rX + 'px';
-    reda.style.top = rY + 'px';
-
-    // Check collision
-    if (Math.abs(rX - zX) < 50 && Math.abs(rY - zY) < 50) {
-      message.textContent = "Zineb is happy 😄";
-      zineb.textContent = "😊";
-    }
-
-    requestAnimationFrame(follow);
-  }
-
-  follow();
-</script>
+  <div class="rightbar">
+    <div>Sponsored</div>
+    <div>Contacts</div>
+  </div>
+</div>
 
 </body>
 </html>
