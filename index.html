@@ -1,174 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MySocial Network</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
-    }
-    /* Header */
-    header {
-      background-color: #1877f2;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    header h1 {
-      font-size: 22px;
-      margin: 0;
-      font-weight: bold;
-    }
-    header input {
-      margin-left: 20px;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 20px;
-      outline: none;
-      width: 250px;
-    }
-    header input:focus {
-      box-shadow: 0 0 5px rgba(255,255,255,0.8);
-    }
-    /* Layout */
-    .container {
-      display: flex;
-      margin-top: 10px;
-      padding: 0 10px;
-    }
-    .sidebar, .rightbar {
-      width: 20%;
-      padding: 10px;
-    }
-    .feed {
-      width: 60%;
-      padding: 10px;
-    }
-    /* Sidebar boxes */
-    .sidebar div, .rightbar div {
-      background: white;
-      padding: 8px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .sidebar div:hover, .rightbar div:hover {
-      background: #f5f6f7;
-    }
-    .sidebar img, .rightbar img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-    /* Posts */
-    .post {
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-    .post-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .post-header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-    .post-header h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-    .post p {
-      margin: 10px 0;
-    }
-    /* Post actions */
-    .actions {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
-      border-top: 1px solid #ddd;
-      padding-top: 8px;
-    }
-    .actions button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-    .actions button:hover {
-      background: #f0f0f0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroStore - Elevate Your Tech Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'headline': ['Montserrat', 'sans-serif'],
+                        'body': ['Open Sans', 'sans-serif']
+                    },
+                    colors: {
+                        'primary': '#1f2937',
+                        'accent': '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="font-body bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="font-headline text-2xl font-black text-primary">ElectroStore</h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-accent transition-colors duration-200">Smartphones</a>
+                    <a href="#" class="text-gray-700 hover:text-accent transition-colors duration-200">Laptops</a>
+                    <a href="#" class="text-gray-700 hover:text-accent transition-colors duration-200">Headphones</a>
+                    <a href="#" class="text-gray-700 hover:text-accent transition-colors duration-200">Gadgets</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-700 hover:text-accent transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <button id="cart-btn" class="relative text-gray-700 hover:text-accent transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2h7a2 2 0 002-2v-4"></path>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<header>
-  <h1>MySocial</h1>
-  <input type="text" placeholder="Search friends, posts..." />
-</header>
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-gray-800 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-headline text-5xl font-black mb-6">Elevate Your Tech Experience</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Discover cutting-edge gadgets and electronics that transform the way you work, play, and connect.</p>
+            <button class="bg-accent hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
+                Shop Now
+            </button>
+        </div>
+    </section>
 
-<div class="container">
-  <!-- Left Sidebar -->
-  <div class="sidebar">
-    <div><img src="https://via.placeholder.com/32" alt=""> My Profile</div>
-    <div><img src="https://via.placeholder.com/32" alt=""> Friends</div>
-    <div><img src="https://via.placeholder.com/32" alt=""> Groups</div>
-    <div><img src="https://via.placeholder.com/32" alt=""> Marketplace</div>
-  </div>
+    <!-- Product Filters -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-wrap gap-4 justify-center">
+            <button class="filter-btn active bg-accent text-white px-6 py-2 rounded-full font-medium transition-all duration-200" data-category="all">
+                All Products
+            </button>
+            <button class="filter-btn bg-white text-gray-700 px-6 py-2 rounded-full font-medium border hover:bg-accent hover:text-white transition-all duration-200" data-category="smartphones">
+                Smartphones
+            </button>
+            <button class="filter-btn bg-white text-gray-700 px-6 py-2 rounded-full font-medium border hover:bg-accent hover:text-white transition-all duration-200" data-category="laptops">
+                Laptops
+            </button>
+            <button class="filter-btn bg-white text-gray-700 px-6 py-2 rounded-full font-medium border hover:bg-accent hover:text-white transition-all duration-200" data-category="headphones">
+                Headphones
+            </button>
+            <button class="filter-btn bg-white text-gray-700 px-6 py-2 rounded-full font-medium border hover:bg-accent hover:text-white transition-all duration-200" data-category="gadgets">
+                Gadgets
+            </button>
+        </div>
+    </section>
 
-  <!-- Feed -->
-  <div class="feed">
-    <div class="post">
-      <div class="post-header">
-        <img src="https://via.placeholder.com/40" alt="">
-        <h3>John Doe</h3>
-      </div>
-      <p>Hello! This is my first post on MySocial.</p>
-      <div class="actions">
-        <button>👍 Like</button>
-        <button>💬 Comment</button>
-      </div>
+    <!-- Products Grid -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="font-headline text-xl font-black text-primary">Shopping Cart</h3>
+                <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+            <p class="text-gray-500 text-center">Your cart is empty</p>
+        </div>
+        <div class="border-t p-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="font-semibold">Total: </span>
+                <span id="cart-total" class="font-bold text-xl">$0.00</span>
+            </div>
+            <button class="w-full bg-accent hover:bg-purple-600 text-white py-3 rounded-lg font-semibold transition-colors duration-200">
+                Checkout
+            </button>
+        </div>
     </div>
 
-    <div class="post">
-      <div class="post-header">
-        <img src="https://via.placeholder.com/40" alt="">
-        <h3>Jane Smith</h3>
-      </div>
-      <p>Just enjoying a sunny day ☀️</p>
-      <div class="actions">
-        <button>👍 Like</button>
-        <button>💬 Comment</button>
-      </div>
-    </div>
-  </div>
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
 
-  <!-- Right Sidebar -->
-  <div class="rightbar">
-    <div><img src="logo.jpg" alt=""> Sponsored Ad</div>
-    <div><img src="https://via.placeholder.com/32" alt=""> Contact 1</div>
-    <div><img src="https://via.placeholder.com/32" alt=""> Contact 2</div>
-  </div>
-</div>
+    <script>
+        // Product data
+        const products = [
+            {
+                id: 1,
+                name: "iPhone 15 Pro",
+                category: "smartphones",
+                price: 999,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.8,
+                description: "Experience unparalleled performance with the latest iPhone featuring titanium design."
+            },
+            {
+                id: 2,
+                name: "MacBook Pro M3",
+                category: "laptops",
+                price: 1999,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.9,
+                description: "Revolutionary M3 chip delivers incredible performance for professionals."
+            },
+            {
+                id: 3,
+                name: "AirPods Pro",
+                category: "headphones",
+                price: 249,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.7,
+                description: "Experience unparalleled sound quality with active noise cancellation."
+            },
+            {
+                id: 4,
+                name: "Apple Watch Ultra",
+                category: "gadgets",
+                price: 799,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.6,
+                description: "The most rugged and capable Apple Watch designed for adventure."
+            },
+            {
+                id: 5,
+                name: "Samsung Galaxy S24",
+                category: "smartphones",
+                price: 899,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.5,
+                description: "AI-powered photography and performance in a sleek design."
+            },
+            {
+                id: 6,
+                name: "Dell XPS 13",
+                category: "laptops",
+                price: 1299,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.4,
+                description: "Ultra-portable laptop with stunning InfinityEdge display."
+            },
+            {
+                id: 7,
+                name: "Sony WH-1000XM5",
+                category: "headphones",
+                price: 399,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.8,
+                description: "Industry-leading noise canceling with exceptional sound quality."
+            },
+            {
+                id: 8,
+                name: "iPad Pro",
+                category: "gadgets",
+                price: 1099,
+                image: "/placeholder.svg?height=300&width=300",
+                rating: 4.7,
+                description: "The ultimate iPad experience with M2 chip and Liquid Retina display."
+            }
+        ];
 
+        let cart = [];
+        let currentFilter = 'all';
+
+        // DOM elements
+        const productsGrid = document.getElementById('products-grid');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const closeCart = document.getElementById('close-cart');
+        const cartCount = document.getElementById('cart-count');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Render products
+        function renderProducts(productsToRender = products) {
+            productsGrid.innerHTML = '';
+            
+            productsToRender.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1';
+                
+                productCard.innerHTML = `
+                    <div class="relative overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-white rounded-full px-2 py-1 text-sm font-semibold flex items-center">
+                            <svg class="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            ${product.rating}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-primary">$${product.price}</span>
+                            <button onclick="addToCart(${product.id})" class="bg-accent hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 add-to-cart-btn">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Filter products
+        function filterProducts(category) {
+            currentFilter = category;
+            const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
+            renderProducts(filteredProducts);
+            
+            // Update filter buttons
+            filterBtns.forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.className = 'filter-btn active bg-accent text-white px-6 py-2 rounded-full font-medium transition-all duration-200';
+                } else {
+                    btn.className = 'filter-btn bg-white text-gray-700 px-6 py-2 rounded-full font-medium border hover:bg-accent hover:text-white transition-all duration-200';
+                }
+            });
+        }
+
+        // Add to cart with animation
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCartUI();
+            
+            // Add animation to cart button
+            cartBtn.classList.add('animate-bounce');
+            setTimeout(() => cartBtn.classList.remove('animate-bounce'), 600);
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (totalItems > 0) {
+                cartCount.textContent = totalItems;
+                cartCount.classList.remove('hidden');
+            } else {
+                cartCount.classList.add('hidden');
+            }
+            
+            cartTotal.textContent = `$${totalPrice.toFixed(2)}`;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center">Your cart is empty</p>';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between py-4 border-b">
+                        <div class="flex items-center">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                            <div class="ml-4">
+                                <h4 class="font-semibold">${item.name}</h4>
+                                <p class="text-gray-600">$${item.price}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="text-gray-500 hover:text-gray-700 px-2">-</button>
+                            <span class="mx-2">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="text-gray-500 hover:text-gray-700 px-2">+</button>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 ml-4">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Update quantity
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        // Toggle cart sidebar
+        function toggleCart() {
+            cartSidebar.classList.toggle('translate-x-full');
+            cartOverlay.classList.toggle('hidden');
+        }
+
+        // Event listeners
+        cartBtn.addEventListener('click', toggleCart);
+        closeCart.addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', toggleCart);
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterProducts(btn.dataset.category);
+            });
+        });
+
+        // Initialize
+        renderProducts();
+    </script>
 </body>
 </html>
