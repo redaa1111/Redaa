@@ -1,0 +1,211 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color tokens to match futuristic electronics store design brief */
+  --background: #f9fafb; /* Light neutral background */
+  --foreground: #4b5563; /* Dark neutral for text */
+  --card: #ffffff; /* White card for product showcases */
+  --card-foreground: #4b5563; /* Dark text on cards */
+  --popover: #ffffff; /* Popover background */
+  --popover-foreground: #4b5563; /* Text color in popovers */
+  --primary: #0891b2; /* Primary action color */
+  --primary-foreground: #ffffff; /* Text color on primary buttons */
+  --secondary: #10b981; /* Accent color for highlights */
+  --secondary-foreground: #ffffff; /* Text color on secondary elements */
+  --muted: #f9fafb; /* Muted background sections */
+  --muted-foreground: #4b5563; /* Text color for muted sections */
+  --accent: #10b981; /* Accent color for interactive elements */
+  --accent-foreground: #ffffff; /* Text color on accent elements */
+  --destructive: #d97706; /* Warning or delete actions */
+  --destructive-foreground: #ffffff; /* Text color on destructive actions */
+  --border: #e5e7eb; /* Light border color */
+  --input: #ffffff; /* Input field background */
+  --ring: rgba(8, 145, 178, 0.5); /* Ring color for focused elements */
+  --chart-1: #0891b2; /* Chart color 1 */
+  --chart-2: #10b981; /* Chart color 2 */
+  --chart-3: #d97706; /* Chart color 3 */
+  --chart-4: #4b5563; /* Chart color 4 */
+  --chart-5: #ffffff; /* Chart color 5 */
+  --radius: 0.5rem; /* Corner rounding for cards and buttons */
+  --sidebar: #ffffff; /* Sidebar background */
+  --sidebar-foreground: #4b5563; /* Sidebar text color */
+  --sidebar-primary: #0891b2; /* Primary sidebar color */
+  --sidebar-primary-foreground: #ffffff; /* Text color for primary sidebar elements */
+  --sidebar-accent: #10b981; /* Accent color for sidebar */
+  --sidebar-accent-foreground: #ffffff; /* Text color for sidebar accents */
+  --sidebar-border: #e5e7eb; /* Border color for sidebar */
+  --sidebar-ring: rgba(8, 145, 178, 0.5); /* Ring color for focused sidebar elements */
+}
+
+.dark {
+  /* Updated dark mode tokens for futuristic theme */
+  --background: #0f172a; /* Deep dark background */
+  --foreground: #f8fafc; /* Light text for dark mode */
+  --card: #1e293b; /* Dark card background */
+  --card-foreground: #f8fafc; /* Light card text */
+  --popover: #1e293b; /* Dark popover background */
+  --popover-foreground: #f8fafc; /* Light popover text */
+  --primary: #0ea5e9; /* Brighter cyan for dark mode */
+  --primary-foreground: #0f172a; /* Dark text on primary */
+  --secondary: #10b981; /* Accent remains bright */
+  --secondary-foreground: #0f172a; /* Dark text on secondary */
+  --muted: #334155; /* Muted dark background */
+  --muted-foreground: #94a3b8; /* Muted light text */
+  --accent: #10b981; /* Accent remains bright */
+  --accent-foreground: #0f172a; /* Dark text on accent */
+  --destructive: #f59e0b; /* Bright amber for dark mode */
+  --destructive-foreground: #0f172a; /* Dark text on destructive */
+  --border: #475569; /* Lighter border for dark mode */
+  --input: #334155; /* Dark input background */
+  --ring: rgba(14, 165, 233, 0.5); /* Ring color remains */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Added futuristic animations and effects for electronics store */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(8, 145, 178, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(8, 145, 178, 0.6), 0 0 60px rgba(8, 145, 178, 0.4);
+  }
+}
+
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: rgba(8, 145, 178, 0.3);
+  }
+  50% {
+    border-color: rgba(8, 145, 178, 0.8);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate-3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+.animate-slide-in {
+  animation: slide-in 0.6s ease-out;
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out;
+}
+.animate-rotate-3d {
+  animation: rotate-3d 10s linear infinite;
+}
+
+/* Added custom scrollbar styling for futuristic look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
