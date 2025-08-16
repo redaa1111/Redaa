@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Fighter Jet</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #87CEEB 0%, #B0C4DE 50%, #778899 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .fighter-jet-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            perspective: 1000px;
+        }
+
+        .fighter-jet {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download-1B95ldJhegcsRJjZ81iFjh9gP4mpCB.jpeg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+            animation: flyingMotion 8s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .jet-glow {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(ellipse at center, rgba(135, 206, 235, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 3s ease-in-out infinite alternate;
+        }
+
+        .engine-trail {
+            position: absolute;
+            top: 50%;
+            left: -150px;
+            width: 150px;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                rgba(255, 100, 0, 0.8) 0%, 
+                rgba(255, 150, 50, 0.6) 30%, 
+                rgba(255, 200, 100, 0.4) 60%, 
+                transparent 100%);
+            border-radius: 4px;
+            transform: translateY(-50%);
+            animation: engineFlame 0.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+        }
+
+        .engine-trail:nth-child(3) {
+            top: 45%;
+            animation-delay: 0.1s;
+        }
+
+        .engine-trail:nth-child(4) {
+            top: 55%;
+            animation-delay: 0.2s;
+        }
+
+        .vapor-trail {
+            position: absolute;
+            top: 20%;
+            left: -300px;
+            width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.6) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+            border-radius: 1px;
+            animation: vaporDrift 4s linear infinite;
+        }
+
+        .vapor-trail:nth-child(6) {
+            top: 80%;
+            animation-delay: 1s;
+        }
+
+        .cockpit-glint {
+            position: absolute;
+            top: 35%;
+            left: 45%;
+            width: 20px;
+            height: 15px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: cockpitFlash 2s ease-in-out infinite;
+        }
+
+        @keyframes flyingMotion {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(-5deg);
+            }
+            25% {
+                transform: translateY(-15px) rotateX(2deg) rotateY(-3deg);
+            }
+            50% {
+                transform: translateY(-10px) rotateX(0deg) rotateY(0deg);
+            }
+            75% {
+                transform: translateY(-20px) rotateX(-2deg) rotateY(3deg);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes engineFlame {
+            0% {
+                width: 150px;
+                opacity: 0.8;
+            }
+            100% {
+                width: 180px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes vaporDrift {
+            0% {
+                opacity: 0.6;
+                transform: translateX(0px) translateY(0px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100px) translateY(-20px);
+            }
+        }
+
+        @keyframes cockpitFlash {
+            0%, 90%, 100% {
+                opacity: 0.3;
+            }
+            5%, 15% {
+                opacity: 1;
+            }
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            border: 1px solid #00ff00;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00ffff;
+            text-transform: uppercase;
+        }
+
+        .info-panel div {
+            margin: 5px 0;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 0, 0.1) 0%, transparent 70%);
+        }
+
+        .radar-sweep::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 45px;
+            background: #00ff00;
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            animation: radarSweep 3s linear infinite;
+        }
+
+        @keyframes radarSweep {
+            0% {
+                transform: translate(-50%, -100%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -100%) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fighter-jet-container">
+        <div class="jet-glow"></div>
+        <div class="engine-trail"></div>
+        <div class="engine-trail"></div>
+        <div class="engine-trail"></div>
+        <div class="vapor-trail"></div>
+        <div class="vapor-trail"></div>
+        <div class="fighter-jet">
+            <div class="cockpit-glint"></div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>Su-57 Felon</h3>
+        <div>Speed: Mach 2.0</div>
+        <div>Altitude: 15,000m</div>
+        <div>Status: Active</div>
+        <div>Stealth: Engaged</div>
+    </div>
+
+    <div class="radar-sweep"></div>
+</body>
+</html>
