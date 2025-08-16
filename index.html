@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+OCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -47,20 +47,44 @@
             color: #a0a0a0;
         }
 
-        .info-grid {
+        /* Modified main layout to three columns: left info, center plane, right info */
+        .main-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr 2fr 1fr;
             gap: 2rem;
             margin-bottom: 3rem;
+            align-items: start;
+        }
+
+        .left-info, .right-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .center-aircraft {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
         }
 
         .info-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease;
+            width: 100%;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
         .info-card:hover {
@@ -101,6 +125,7 @@
         .aircraft-image {
             position: relative;
             width: 100%;
+            max-width: 500px;
             height: 400px;
             overflow: hidden;
             border-radius: 20px;
@@ -212,12 +237,25 @@
             50% { opacity: 1; transform: scale(1.8); }
         }
 
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .left-info, .right-info {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
             
-            .info-grid {
+            .left-info, .right-info {
                 grid-template-columns: 1fr;
             }
             
@@ -234,82 +272,108 @@
 </head>
 <body>
     <div class="container">
-        <!-- Information section stays at top -->
         <div class="header">
             <h1>Su-57 Felon</h1>
             <p>Fifth-Generation Stealth Fighter Aircraft</p>
         </div>
 
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>General Specifications</h3>
-                <div class="spec-item">
-                    <span class="spec-label">Length:</span>
-                    <span class="spec-value">19.8 m (65 ft)</span>
+        <!-- Reorganized layout: left info, center aircraft, right info -->
+        <div class="main-content">
+            <!-- Left side information -->
+            <div class="left-info">
+                <div class="info-card">
+                    <h3>General Specifications</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Length:</span>
+                        <span class="spec-value">19.8 m (65 ft)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Wingspan:</span>
+                        <span class="spec-value">14.0 m (46 ft)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Height:</span>
+                        <span class="spec-value">4.74 m (15.6 ft)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Max Weight:</span>
+                        <span class="spec-value">35,000 kg (77,162 lb)</span>
+                    </div>
                 </div>
-                <div class="spec-item">
-                    <span class="spec-label">Wingspan:</span>
-                    <span class="spec-value">14.0 m (46 ft)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Height:</span>
-                    <span class="spec-value">4.74 m (15.6 ft)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Max Weight:</span>
-                    <span class="spec-value">35,000 kg (77,162 lb)</span>
+
+                <div class="info-card">
+                    <h3>Performance</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Max Speed:</span>
+                        <span class="spec-value">Mach 2.0 (2,100 km/h)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Service Ceiling:</span>
+                        <span class="spec-value">20,000 m (65,617 ft)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Range:</span>
+                        <span class="spec-value">3,500 km (2,175 mi)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Engines:</span>
+                        <span class="spec-value">2× Saturn AL-41F1</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="info-card">
-                <h3>Performance</h3>
-                <div class="spec-item">
-                    <span class="spec-label">Max Speed:</span>
-                    <span class="spec-value">Mach 2.0 (2,100 km/h)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Service Ceiling:</span>
-                    <span class="spec-value">20,000 m (65,617 ft)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Range:</span>
-                    <span class="spec-value">3,500 km (2,175 mi)</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Engines:</span>
-                    <span class="spec-value">2× Saturn AL-41F1</span>
+            <!-- Center aircraft with animation -->
+            <div class="center-aircraft">
+                <div class="aircraft-image">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download-uLhbuA3cjye20owZ4rKElKKOQuwI5h.jpeg" alt="Su-57 Fighter Aircraft">
                 </div>
             </div>
 
-            <div class="info-card">
-                <h3>Capabilities</h3>
-                <div class="spec-item">
-                    <span class="spec-label">Stealth:</span>
-                    <span class="spec-value">Low RCS Design</span>
+            <!-- Right side information -->
+            <div class="right-info">
+                <div class="info-card">
+                    <h3>Capabilities</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Stealth:</span>
+                        <span class="spec-value">Low RCS Design</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Supercruise:</span>
+                        <span class="spec-value">Mach 1.6</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Radar:</span>
+                        <span class="spec-value">N036 Byelka AESA</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">First Flight:</span>
+                        <span class="spec-value">January 29, 2010</span>
+                    </div>
                 </div>
-                <div class="spec-item">
-                    <span class="spec-label">Supercruise:</span>
-                    <span class="spec-value">Mach 1.6</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Radar:</span>
-                    <span class="spec-value">N036 Byelka AESA</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">First Flight:</span>
-                    <span class="spec-value">January 29, 2010</span>
+
+                <div class="info-card">
+                    <h3>Armament</h3>
+                    <div class="spec-item">
+                        <span class="spec-label">Internal Bays:</span>
+                        <span class="spec-value">2 main + 2 side</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Missiles:</span>
+                        <span class="spec-value">R-77, R-74M</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Cannon:</span>
+                        <span class="spec-value">30mm GSh-30-1</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Payload:</span>
+                        <span class="spec-value">10,000 kg max</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Aircraft image in middle with movement animation -->
-        <div class="aircraft-section">
-            <div class="aircraft-image">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download-uLhbuA3cjye20owZ4rKElKKOQuwI5h.jpeg" alt="Su-57 Fighter Aircraft">
-            </div>
-        </div>
-
-        <!-- Separate radar section at bottom -->
+        <!-- Radar section remains at bottom -->
         <div class="radar-section">
             <h2>Radar Detection</h2>
             <div class="radar-display">
