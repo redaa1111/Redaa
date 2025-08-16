@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -68,6 +68,7 @@
             align-items: center;
             justify-content: center;
             min-height: 500px;
+            gap: 3rem;
         }
 
         .info-card {
@@ -125,8 +126,8 @@
         .aircraft-image {
             position: relative;
             width: 100%;
-            max-width: 350px;
-            height: 280px;
+            max-width: 450px;
+            height: 350px;
             overflow: hidden;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -176,11 +177,10 @@
             letter-spacing: 2px;
         }
 
-        .radar-display {
+        .center-radar-display {
             position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
+            width: 250px;
+            height: 250px;
             background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 40%, transparent 70%);
             border: 2px solid #00d4ff;
             border-radius: 50%;
@@ -263,7 +263,7 @@
                 height: 220px;
             }
 
-            .radar-display {
+            .center-radar-display {
                 width: 220px;
                 height: 220px;
             }
@@ -322,10 +322,20 @@
                 </div>
             </div>
 
-            <!-- Center aircraft with animation -->
+            <!-- Center aircraft with animation and radar underneath -->
             <div class="center-aircraft">
                 <div class="aircraft-image">
                     <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download-uLhbuA3cjye20owZ4rKElKKOQuwI5h.jpeg" alt="Su-57 Fighter Aircraft">
+                </div>
+                
+                <!-- Moved radar display directly under the plane -->
+                <div class="center-radar-display">
+                    <div class="radar-grid"></div>
+                    <div class="radar-sweep"></div>
+                    <div class="radar-dot"></div>
+                    <div class="radar-dot"></div>
+                    <div class="radar-dot"></div>
+                    <div class="radar-dot"></div>
                 </div>
             </div>
 
@@ -372,20 +382,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Radar section remains at bottom -->
-        <div class="radar-section">
-            <h2>Radar Detection</h2>
-            <div class="radar-display">
-                <div class="radar-grid"></div>
-                <div class="radar-sweep"></div>
-                <div class="radar-dot"></div>
-                <div class="radar-dot"></div>
-                <div class="radar-dot"></div>
-                <div class="radar-dot"></div>
-            </div>
-        </div>
     </div>
 </body>
 </html>
-
