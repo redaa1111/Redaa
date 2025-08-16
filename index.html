@@ -311,11 +311,12 @@
         }
 
         .aircraft-image img {
-            width: 120%;
-            height: 120%;
-            object-fit: cover;
-            object-position: center 30%;
-            transform: scale(1.2);
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Changed from object-position center 30% and scale(1.2) to show full aircraft */
+            object-position: center center;
+            transform: scale(1);
             filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
             animation: combat-flight 10s ease-in-out infinite;
         }
@@ -323,27 +324,28 @@
         /* More sophisticated flight animation with banking and altitude changes */
         @keyframes combat-flight {
             0% { 
-                transform: scale(1.2) translateX(-50px) translateY(30px) rotate(-6deg);
+                /* Reduced transform values to keep full aircraft visible */
+                transform: scale(1) translateX(-20px) translateY(15px) rotate(-3deg);
                 filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
             }
             20% { 
-                transform: scale(1.2) translateX(40px) translateY(-25px) rotate(8deg);
+                transform: scale(1) translateX(20px) translateY(-15px) rotate(4deg);
                 filter: contrast(1.7) brightness(1.3) saturate(1.6) hue-rotate(15deg);
             }
             40% { 
-                transform: scale(1.2) translateX(-30px) translateY(20px) rotate(-5deg);
+                transform: scale(1) translateX(-15px) translateY(10px) rotate(-2deg);
                 filter: contrast(1.4) brightness(1.0) saturate(1.3) hue-rotate(5deg);
             }
             60% { 
-                transform: scale(1.2) translateX(35px) translateY(-30px) rotate(7deg);
+                transform: scale(1) translateX(18px) translateY(-12px) rotate(3deg);
                 filter: contrast(1.6) brightness(1.2) saturate(1.5) hue-rotate(20deg);
             }
             80% { 
-                transform: scale(1.2) translateX(-45px) translateY(15px) rotate(-4deg);
+                transform: scale(1) translateX(-22px) translateY(8px) rotate(-2deg);
                 filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
             }
             100% { 
-                transform: scale(1.2) translateX(-50px) translateY(30px) rotate(-6deg);
+                transform: scale(1) translateX(-20px) translateY(15px) rotate(-3deg);
                 filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
             }
         }
