@@ -2,138 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>F‑22 Raptor — War‑Style Showcase</title>
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>F-22 Raptor Showcase</title>
   <style>
-    :root{
-      --bg:#0b0f11;         /* deep night */
-      --panel:#0f1519;      /* panels */
-      --line:#20343c;       /* grid lines */
-      --accent:#00ffa8;     /* radar green */
-      --accent2:#ff4d4d;    /* warning red */
-      --text:#e8f1f2;       /* primary text */
-      --muted:#9fb3b8;      /* secondary text */
-      --camo1:#20322a; --camo2:#1a2722; --camo3:#122019;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #0ff;
+      overflow-x: hidden;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--text); font-family:"Share Tech Mono", monospace;
+    header {
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 2px solid #0ff;
+      background: rgba(0,0,0,0.8);
+    }
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #0ff;
+    }
+    .radar {
+      background: url('https://upload.wikimedia.org/wikipedia/commons/0/08/Radar_animation.gif') center/cover no-repeat;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      opacity:0.2;
+      z-index:-2;
+    }
+    .hud-grid {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
       background-image:
-        radial-gradient(ellipse at 10% 15%, var(--camo1) 0 12%, transparent 13%),
-        radial-gradient(ellipse at 85% 30%, var(--camo2) 0 10%, transparent 11%),
-        radial-gradient(ellipse at 40% 70%, var(--camo3) 0 9%, transparent 10%);
-      background-attachment:fixed;
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0,255,204,0.2) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0,255,204,0.2) 50px);
+      z-index:-1;
     }
-    .grid{
-      position:fixed; inset:0; pointer-events:none; opacity:.25;
-      background-image: 
-        linear-gradient(transparent 31px, var(--line) 32px),
-        linear-gradient(90deg, transparent 31px, var(--line) 32px);
-      background-size:32px 32px, 32px 32px;
-      animation: drift 40s linear infinite;
+    .f22-svg {
+      display: block;
+      margin: 2rem auto;
+      max-width: 400px;
+      filter: drop-shadow(0 0 10px #0ff);
     }
-    @keyframes drift{from{background-position:0 0,0 0} to{background-position:0 512px,512px 0}}
-
-    header{
-      position:relative; overflow:hidden; isolation:isolate;
-      background:radial-gradient(1200px 600px at 70% 30%, #123034 0%, #0a1215 60%, transparent 70%) no-repeat;
-      border-bottom:1px solid var(--line);
+    .f22-photo {
+      display: block;
+      margin: 1rem auto;
+      max-width: 600px;
+      width: 100%;
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #0ff;
     }
-    .wrap{max-width:1200px; margin:0 auto; padding:24px;}
-    .title{font-family:"Russo One", system-ui, sans-serif; letter-spacing:.04em; text-transform:uppercase}
-    .hero{
-      display:grid; grid-template-columns: 1.2fr .8fr; gap:28px; align-items:center; min-height:64vh;
+    .calculator {
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 1rem;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.6);
     }
-    @media (max-width:900px){.hero{grid-template-columns:1fr; min-height:auto}}
-
-    .badge{display:inline-block; padding:6px 10px; border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:.85rem}
-    .headline{font-size:clamp(28px, 4vw, 56px); margin:.25rem 0 1rem}
-    .sub{color:var(--muted); max-width:60ch}
-
-    .btn{
-      display:inline-flex; gap:10px; align-items:center; padding:12px 16px; border:1px solid var(--accent);
-      color:var(--bg); background:var(--accent); border-radius:10px; text-decoration:none; font-weight:700;
-      transition:transform .06s ease, box-shadow .2s ease; box-shadow:0 0 0 0 rgba(0,255,168,.25);
+    .calculator label {
+      display: block;
+      margin-top: 1rem;
     }
-    .btn:hover{ transform: translateY(-1px); box-shadow:0 0 0 6px rgba(0,255,168,.08)}
-    .btn.secondary{background:transparent; color:var(--accent);}
-    .btn.secondary:hover{box-shadow:0 0 0 6px rgba(0,255,168,.06)}
-
-    .card{
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) padding-box,
-        linear-gradient(180deg, rgba(0,255,168,.35), rgba(0,255,168,0)) border-box;
-      border:1px solid var(--line); border-radius:16px; padding:18px; backdrop-filter: blur(6px);
+    .calculator input {
+      width: 100%;
+      padding: 0.5rem;
+      background: #000;
+      border: 1px solid #0ff;
+      color: #0ff;
     }
-
-    .jet{
-      position:relative; width:100%; aspect-ratio:16/9; border-radius:18px; overflow:hidden; border:1px solid var(--line);
-      background: radial-gradient(800px 400px at 30% 30%, rgba(0,255,168,.12), transparent 60%),
-                 linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.1));
-      box-shadow: inset 0 0 40px rgba(0,0,0,.4);
+    .calculator button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #0ff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .hud{
-      position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
+    .results {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #0ff;
+      background: rgba(0,0,0,0.5);
     }
-    .hud img{
-      width:100%; height:100%; object-fit:cover; opacity:0.4;
-    }
-
-    .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:18px}
-    @media (max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
-    .stat{padding:14px; border:1px dashed var(--line); border-radius:12px; text-align:center}
-    .stat .k{font-size:1.6rem; font-weight:800}
-    .muted{color:var(--muted)}
-
-    .calc{display:grid; grid-template-columns:1fr 1fr; gap:20px}
-    @media (max-width:900px){.calc{grid-template-columns:1fr}}
-    .field{display:flex; flex-direction:column; gap:6px}
-    input[type="number"]{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0b1316; color:var(--text)}
-    .gridline{border-top:1px dashed var(--line); margin:12px 0}
-    .tag{display:inline-block; padding:4px 8px; background:rgba(0,255,168,.12); border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:.75rem}
-
-    footer{color:var(--muted); border-top:1px solid var(--line); margin-top:40px}
-    .warn{color:var(--accent2)}
-
-    .flex{display:flex; gap:12px; flex-wrap:wrap}
   </style>
 </head>
 <body>
-  <div class="grid" aria-hidden="true"></div>
+  <div class="radar"></div>
+  <div class="hud-grid"></div>
+
   <header>
-    <div class="wrap hero">
-      <div>
-        <span class="badge">Lock • Track • Engage</span>
-        <h1 class="title headline">F‑22 Raptor <span style="color:var(--accent)">/</span> Air‑Dominance Showcase</h1>
-        <p class="sub">Stealth. Supercruise. Super‑maneuverability. Explore key performance metrics and run quick engineering calcs like thrust‑to‑weight, wing loading, and a simplified turn‑rate estimator.</p>
-        <div class="flex" style="margin-top:12px">
-          <a class="btn" href="#calc">Open Engineering Calculator ▸</a>
-          <a class="btn secondary" href="#specs">View Specs</a>
-        </div>
-        <div class="stats" id="specs">
-          <div class="stat"><div class="k" id="stat-tw">1.26:1</div><div class="muted">Thrust‑to‑Weight (est.)</div></div>
-          <div class="stat"><div class="k">M&nbsp;2.0+</div><div class="muted">Top Speed</div></div>
-          <div class="stat"><div class="k">> 65,000&nbsp;ft</div><div class="muted">Ceiling</div></div>
-          <div class="stat"><div class="k">~ 78 m²</div><div class="muted">Wing Area</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="jet" aria-label="F‑22 graphic with HUD">
-          <!-- Real image of F‑22 -->
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/F-22_Raptor_-_20050730.jpg" alt="F-22 Raptor" style="width:100%; height:100%; object-fit:cover; border-radius:18px; opacity:0.85;"/>
-          <div class="hud">
-            <!-- Real radar overlay -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Radar_screen.jpg" alt="Radar HUD" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <h1>F-22 Raptor — War-Style Engineering Showcase</h1>
   </header>
 
-  <!-- Rest of the code remains unchanged (calculator, footer, JS) -->
-  ... (same as before)
+  <!-- Inline SVG F-22 -->
+  <svg class="f22-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path fill="none" stroke="#0ff" stroke-width="4" 
+      d="M256 32 L300 100 L400 120 L420 200 L360 280 L370 400 L256 480 L142 400 L152 280 L92 200 L112 120 L212 100 Z"/>
+  </svg>
+
+  <!-- Real F-22 photo -->
+  <img class="f22-photo" src="https://www.lockheedmartin.com/content/dam/lockheed-martin/aero/photo/f-22/F-22%20Front%20Flight.jpg" alt="F-22 Raptor">
+
+  <!-- Calculator -->
+  <div class="calculator">
+    <h2>Engineering Calculator</h2>
+    <label for="thrust">Thrust (kN)</label>
+    <input type="number" id="thrust" placeholder="Example: 156">
+
+    <label for="weight">Weight (kg)</label>
+    <input type="number" id="weight" placeholder="Example: 19700">
+
+    <label for="wing">Wing Area (m²)</label>
+    <input type="number" id="wing" placeholder="Example: 78">
+
+    <button onclick="calculate()">Calculate</button>
+    <button onclick="preset()">Use F-22 Values</button>
+
+    <div class="results" id="results">Results will appear here...</div>
+  </div>
+
+  <script>
+    function calculate() {
+      const thrust = parseFloat(document.getElementById('thrust').value);
+      const weight = parseFloat(document.getElementById('weight').value);
+      const wing = parseFloat(document.getElementById('wing').value);
+
+      if (isNaN(thrust) || isNaN(weight) || isNaN(wing)) {
+        document.getElementById('results').innerText = "⚠ Please enter all values.";
+        return;
+      }
+
+      const thrustToWeight = thrust * 1000 / (weight * 9.81);
+      const wingLoading = weight * 9.81 / wing;
+      const turnRate = (thrustToWeight * 30).toFixed(2);
+      const climbRate = (thrustToWeight * 315).toFixed(2);
+
+      document.getElementById('results').innerHTML = `
+        <b>Thrust-to-Weight:</b> ${thrustToWeight.toFixed(2)} <br>
+        <b>Wing Loading:</b> ${wingLoading.toFixed(2)} N/m² <br>
+        <b>Estimated Turn Rate:</b> ${turnRate} °/s <br>
+        <b>Climb Rate:</b> ${climbRate} m/s
+      `;
+    }
+
+    function preset() {
+      document.getElementById('thrust').value = 156;
+      document.getElementById('weight').value = 19700;
+      document.getElementById('wing').value = 78;
+      calculate();
+    }
+  </script>
 </body>
 </html>
+
