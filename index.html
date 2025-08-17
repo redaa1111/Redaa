@@ -1,637 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Su-57 Fighter Aircraft</title>
-    <!-- Updated to military-style fonts for war theme -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Added comprehensive design system with semantic color tokens */
-            --background: #0d1117;
-            --foreground: #f0f6fc;
-            --card: rgba(22, 27, 34, 0.9);
-            --card-foreground: #e6edf3;
-            --popover: rgba(32, 39, 49, 0.95);
-            --popover-foreground: #f0f6fc;
-            --primary: #ff6b35;
-            --primary-foreground: #0d1117;
-            --secondary: #00d084;
-            --secondary-foreground: #0d1117;
-            --muted: rgba(56, 139, 253, 0.1);
-            --muted-foreground: #7d8590;
-            --accent: #ffd700;
-            --accent-foreground: #0d1117;
-            --destructive: #da3633;
-            --destructive-foreground: #f0f6fc;
-            --border: rgba(240, 246, 252, 0.1);
-            --input: rgba(33, 38, 45, 0.8);
-            --ring: #ff6b35;
-            --radius: 8px;
-            --war-red: #cc0000;
-            --war-green: #228b22;
-            --war-orange: #ff4500;
-            --tactical-gray: #2f3349;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>F‑22 Raptor — War‑Style Showcase</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f11;         /* deep night */
+      --panel:#0f1519;      /* panels */
+      --line:#20343c;       /* grid lines */
+      --accent:#00ffa8;     /* radar green */
+      --accent2:#ff4d4d;    /* warning red */
+      --text:#e8f1f2;       /* primary text */
+      --muted:#9fb3b8;      /* secondary text */
+      --camo1:#20322a; --camo2:#1a2722; --camo3:#122019;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text); font-family:"Share Tech Mono", monospace;
+      background-image:
+        radial-gradient(ellipse at 10% 15%, var(--camo1) 0 12%, transparent 13%),
+        radial-gradient(ellipse at 85% 30%, var(--camo2) 0 10%, transparent 11%),
+        radial-gradient(ellipse at 40% 70%, var(--camo3) 0 9%, transparent 10%);
+      background-attachment:fixed;
+    }
+    /* Subtle animated radar grid */
+    .grid{
+      position:fixed; inset:0; pointer-events:none; opacity:.25;
+      background-image: 
+        linear-gradient(transparent 31px, var(--line) 32px),
+        linear-gradient(90deg, transparent 31px, var(--line) 32px);
+      background-size:32px 32px, 32px 32px;
+      animation: drift 40s linear infinite;
+    }
+    @keyframes drift{from{background-position:0 0,0 0} to{background-position:0 512px,512px 0}}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    header{
+      position:relative; overflow:hidden; isolation:isolate;
+      background:radial-gradient(1200px 600px at 70% 30%, #123034 0%, #0a1215 60%, transparent 70%) no-repeat;
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:24px;}
+    .title{font-family:"Russo One", system-ui, sans-serif; letter-spacing:.04em; text-transform:uppercase}
+    .hero{
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:28px; align-items:center; min-height:64vh;
+    }
+    @media (max-width:900px){.hero{grid-template-columns:1fr; min-height:auto}}
 
-        body {
-            /* Updated to Inter font and enhanced background with animated particles */
-            font-family: 'Rajdhani', sans-serif;
-            background: 
-                radial-gradient(circle at 15% 85%, rgba(204, 0, 0, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 85% 15%, rgba(255, 69, 0, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(34, 139, 34, 0.1) 0%, transparent 60%),
-                linear-gradient(135deg, var(--background) 0%, #161b22 50%, #0d1117 100%);
-            color: var(--foreground);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow-x: hidden;
-        }
+    .badge{display:inline-block; padding:6px 10px; border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:.85rem}
+    .headline{font-size:clamp(28px, 4vw, 56px); margin:.25rem 0 1rem}
+    .sub{color:var(--muted); max-width:60ch}
 
-        /* Added animated background particles for dynamic feel */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(3px 3px at 25px 35px, var(--war-red), transparent),
-                radial-gradient(2px 2px at 45px 75px, var(--war-orange), transparent),
-                radial-gradient(1px 1px at 95px 45px, var(--accent), transparent),
-                radial-gradient(2px 2px at 135px 85px, var(--war-green), transparent);
-            background-repeat: repeat;
-            background-size: 180px 180px;
-            animation: war-particles 15s linear infinite;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.6;
-        }
+    .btn{
+      display:inline-flex; gap:10px; align-items:center; padding:12px 16px; border:1px solid var(--accent);
+      color:var(--bg); background:var(--accent); border-radius:10px; text-decoration:none; font-weight:700;
+      transition:transform .06s ease, box-shadow .2s ease; box-shadow:0 0 0 0 rgba(0,255,168,.25);
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow:0 0 0 6px rgba(0,255,168,.08)}
+    .btn.secondary{background:transparent; color:var(--accent);}
+    .btn.secondary:hover{box-shadow:0 0 0 6px rgba(0,255,168,.06)}
 
-        @keyframes war-particles {
-            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-            25% { transform: translateY(-30px) translateX(15px) rotate(90deg); }
-            50% { transform: translateY(-15px) translateX(-10px) rotate(180deg); }
-            75% { transform: translateY(-25px) translateX(20px) rotate(270deg); }
-            100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
-        }
+    .card{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) padding-box,
+        linear-gradient(180deg, rgba(0,255,168,.35), rgba(0,255,168,0)) border-box;
+      border:1px solid var(--line); border-radius:16px; padding:18px; backdrop-filter: blur(6px);
+    }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            flex: 1;
-            position: relative;
-            z-index: 1;
-        }
+    /* Inline F‑22 SVG silhouette */
+    .jet{
+      position:relative; width:100%; aspect-ratio:16/9; border-radius:18px; overflow:hidden; border:1px solid var(--line);
+      background: radial-gradient(800px 400px at 30% 30%, rgba(0,255,168,.12), transparent 60%),
+                 linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.1));
+      box-shadow: inset 0 0 40px rgba(0,0,0,.4);
+    }
+    .hud{
+      position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
+    }
+    .hud::before{
+      content:""; position:absolute; inset:0; background:
+         radial-gradient(circle at 30% 40%, rgba(0,255,168,.25) 0 1px, transparent 2px) 0 0/40px 40px,
+         radial-gradient(circle at 70% 60%, rgba(0,255,168,.18) 0 1px, transparent 2px) 20px 20px/40px 40px;
+      opacity:.5;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2.5rem;
-            /* Enhanced header with glassmorphism and gradient border */
-            background: 
-                linear-gradient(135deg, rgba(204, 0, 0, 0.3) 0%, rgba(47, 51, 73, 0.8) 50%, rgba(255, 69, 0, 0.2) 100%),
-                var(--card);
-            backdrop-filter: blur(15px);
-            border-radius: var(--radius);
-            border: 2px solid var(--war-red);
-            box-shadow: 
-                0 0 40px rgba(204, 0, 0, 0.4),
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
+    /* Stats grid */
+    .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:18px}
+    @media (max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+    .stat{padding:14px; border:1px dashed var(--line); border-radius:12px; text-align:center}
+    .stat .k{font-size:1.6rem; font-weight:800}
+    .muted{color:var(--muted)}
 
-        /* Added subtle animated gradient overlay to header */
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.3), rgba(204, 0, 0, 0.2), transparent);
-            animation: tactical-scan 4s ease-in-out infinite;
-        }
+    /* Calculator */
+    .calc{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+    @media (max-width:900px){.calc{grid-template-columns:1fr}}
+    .field{display:flex; flex-direction:column; gap:6px}
+    input[type="number"]{padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0b1316; color:var(--text)}
+    .gridline{border-top:1px dashed var(--line); margin:12px 0}
+    .tag{display:inline-block; padding:4px 8px; background:rgba(0,255,168,.12); border:1px solid var(--accent); color:var(--accent); border-radius:6px; font-size:.75rem}
 
-        @keyframes tactical-scan {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: 100%; }
-        }
+    footer{color:var(--muted); border-top:1px solid var(--line); margin-top:40px}
+    .warn{color:var(--accent2)}
 
-        .header h1 {
-            /* Updated typography with better spacing and modern styling */
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2.8rem, 6vw, 5rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--war-red), var(--war-orange), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 
-                0 0 20px rgba(204, 0, 0, 0.5),
-                0 0 40px rgba(255, 69, 0, 0.3);
-            letter-spacing: -1px;
-            position: relative;
-            z-index: 1;
-            text-transform: uppercase;
-        }
-
-        .header p {
-            font-size: 1.3rem;
-            color: var(--accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
-            align-items: start;
-        }
-
-        .left-info, .right-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .center-aircraft {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 600px;
-            gap: 4rem;
-        }
-
-        .info-card {
-            /* Enhanced glassmorphism with better shadows and borders */
-            background: 
-                linear-gradient(135deg, rgba(47, 51, 73, 0.9) 0%, rgba(22, 27, 34, 0.95) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius);
-            padding: 2.5rem;
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            box-shadow: 
-                0 0 30px rgba(204, 0, 0, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Added gradient accent border that appears on hover */
-        .info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--war-red), var(--war-orange), var(--accent), var(--war-green));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .info-card:hover::before {
-            opacity: 1;
-        }
-
-        .info-card:hover {
-            transform: translateY(-15px) scale(1.03);
-            box-shadow: 
-                0 0 50px rgba(204, 0, 0, 0.4),
-                0 30px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            border-color: var(--war-red);
-        }
-
-        .info-card h3 {
-            /* Modern typography with better hierarchy */
-            font-family: 'Orbitron', monospace;
-            color: var(--accent);
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid var(--war-red);
-            position: relative;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-
-        .spec-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            transition: all 0.3s ease;
-            border-radius: 6px;
-        }
-
-        .spec-item:hover {
-            background: rgba(6, 182, 212, 0.05);
-            margin: 0 -1rem 1.2rem -1rem;
-            padding: 1rem;
-            border-bottom-color: var(--primary);
-            transform: translateX(8px);
-        }
-
-        .spec-label {
-            font-weight: 500;
-            color: var(--card-foreground);
-            font-size: 0.95rem;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .spec-value {
-            color: var(--war-orange);
-            font-weight: 700;
-            text-align: right;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.95rem;
-            text-shadow: 0 0 5px rgba(255, 69, 0, 0.3);
-        }
-
-        .aircraft-section {
-            margin: 3rem 0;
-            text-align: center;
-        }
-
-        .aircraft-image {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 400px;
-            overflow: hidden;
-            border-radius: var(--radius);
-            /* Enhanced with multiple shadow layers and glow effect */
-            box-shadow: 
-                0 0 60px rgba(204, 0, 0, 0.4),
-                0 40px 80px rgba(0, 0, 0, 0.6),
-                inset 0 0 40px rgba(255, 69, 0, 0.1);
-            border: 3px solid var(--war-red);
-            background: linear-gradient(135deg, var(--tactical-gray) 0%, var(--card) 100%);
-            transition: all 0.4s ease;
-        }
-
-        .aircraft-image:hover {
-            transform: scale(1.08);
-            box-shadow: 
-                0 0 80px rgba(204, 0, 0, 0.6),
-                0 50px 100px rgba(0, 0, 0, 0.7);
-            border-color: var(--war-orange);
-        }
-
-        .aircraft-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            /* Changed from object-position center 30% and scale(1.2) to show full aircraft */
-            object-position: center center;
-            transform: scale(1);
-            filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
-            animation: combat-flight 10s ease-in-out infinite;
-        }
-
-        /* More sophisticated flight animation with banking and altitude changes */
-        @keyframes combat-flight {
-            0% { 
-                /* Reduced transform values to keep full aircraft visible */
-                transform: scale(1) translateX(-20px) translateY(15px) rotate(-3deg);
-                filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
-            }
-            20% { 
-                transform: scale(1) translateX(20px) translateY(-15px) rotate(4deg);
-                filter: contrast(1.7) brightness(1.3) saturate(1.6) hue-rotate(15deg);
-            }
-            40% { 
-                transform: scale(1) translateX(-15px) translateY(10px) rotate(-2deg);
-                filter: contrast(1.4) brightness(1.0) saturate(1.3) hue-rotate(5deg);
-            }
-            60% { 
-                transform: scale(1) translateX(18px) translateY(-12px) rotate(3deg);
-                filter: contrast(1.6) brightness(1.2) saturate(1.5) hue-rotate(20deg);
-            }
-            80% { 
-                transform: scale(1) translateX(-22px) translateY(8px) rotate(-2deg);
-                filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
-            }
-            100% { 
-                transform: scale(1) translateX(-20px) translateY(15px) rotate(-3deg);
-                filter: contrast(1.5) brightness(1.1) saturate(1.4) hue-rotate(10deg);
-            }
-        }
-
-        .center-radar-display {
-            position: relative;
-            width: 350px;
-            height: 350px;
-            margin: 0 auto;
-            /* Updated radar background to green theme */
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(34, 139, 34, 0.2) 0%, rgba(0, 100, 0, 0.1) 40%, transparent 70%),
-                radial-gradient(circle at 50% 50%, rgba(0, 128, 0, 0.15) 20%, transparent 60%);
-            border: 4px solid var(--war-green);
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 
-                0 0 80px rgba(34, 139, 34, 0.6),
-                inset 0 0 60px rgba(0, 128, 0, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px);
-        }
-
-        .radar-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Updated radar grid lines to green colors */
-            background: 
-                radial-gradient(circle at 50% 50%, transparent 24%, rgba(0, 128, 0, 0.4) 25%, rgba(0, 128, 0, 0.4) 26%, transparent 27%),
-                radial-gradient(circle at 50% 50%, transparent 49%, rgba(34, 139, 34, 0.3) 50%, rgba(34, 139, 34, 0.3) 51%, transparent 52%),
-                radial-gradient(circle at 50% 50%, transparent 74%, rgba(0, 100, 0, 0.2) 75%, rgba(0, 100, 0, 0.2) 76%, transparent 77%),
-                linear-gradient(90deg, transparent 49%, rgba(0, 128, 0, 0.5) 50%, transparent 51%),
-                linear-gradient(0deg, transparent 49%, rgba(0, 128, 0, 0.5) 50%, transparent 51%);
-        }
-
-        .radar-sweep {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 8px;
-            height: 175px;
-            /* Updated radar sweep to green gradient and glow */
-            background: linear-gradient(to bottom, var(--war-green), rgba(0, 128, 0, 0.7), transparent);
-            transform-origin: bottom center;
-            transform: translate(-50%, -100%) rotate(0deg);
-            animation: military-radar-sweep 2.5s linear infinite;
-            box-shadow: 
-                0 0 40px var(--war-green),
-                0 0 80px rgba(0, 128, 0, 0.6);
-            border-radius: 4px;
-        }
-
-        @keyframes military-radar-sweep {
-            0% { 
-                transform: translate(-50%, -100%) rotate(0deg); 
-                opacity: 1; 
-                /* Updated radar sweep animation glow to green */
-                box-shadow: 0 0 40px var(--war-green), 0 0 80px rgba(0, 128, 0, 0.6);
-            }
-            50% { 
-                opacity: 0.9; 
-                box-shadow: 0 0 60px var(--war-green), 0 0 120px rgba(0, 128, 0, 0.8);
-            }
-            100% { 
-                transform: translate(-50%, -100%) rotate(360deg); 
-                opacity: 1; 
-                box-shadow: 0 0 40px var(--war-green), 0 0 80px rgba(0, 128, 0, 0.6);
-            }
-        }
-
-        .radar-dot {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            /* Enhanced radar dots with better colors and effects */
-            background: radial-gradient(circle, var(--war-red), rgba(204, 0, 0, 0.7));
-            border: 3px solid rgba(255, 69, 0, 0.9);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 30px var(--war-red),
-                0 0 60px rgba(204, 0, 0, 0.5);
-            animation: tactical-pulse 2s ease-in-out infinite;
-        }
-
-        .radar-dot:nth-child(3) { top: 20%; left: 30%; animation-delay: 0.2s; }
-        .radar-dot:nth-child(4) { top: 70%; left: 75%; animation-delay: 0.6s; }
-        .radar-dot:nth-child(5) { top: 85%; left: 20%; animation-delay: 1.0s; }
-        .radar-dot:nth-child(6) { top: 35%; left: 65%; animation-delay: 1.4s; }
-
-        @keyframes tactical-pulse {
-            0%, 100% { 
-                opacity: 0.7; 
-                transform: scale(1); 
-                box-shadow: 0 0 30px var(--war-red), 0 0 60px rgba(204, 0, 0, 0.5);
-            }
-            50% { 
-                opacity: 1; 
-                transform: scale(2.5); 
-                box-shadow: 0 0 50px var(--war-red), 0 0 100px rgba(204, 0, 0, 0.7);
-            }
-        }
-
-        /* Enhanced responsive design with better breakpoints */
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-            
-            .left-info, .right-info {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                gap: 2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 2rem 1rem;
-            }
-            
-            .header {
-                padding: 2rem 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2.5rem;
-                letter-spacing: -1px;
-            }
-            
-            .header p {
-                font-size: 1rem;
-                letter-spacing: 2px;
-            }
-            
-            .left-info, .right-info {
-                grid-template-columns: 1fr;
-            }
-            
-            .aircraft-image {
-                height: 300px;
-                max-width: 400px;
-            }
-
-            .center-radar-display {
-                width: 280px;
-                height: 280px;
-            }
-            
-            .info-card {
-                padding: 2rem;
-            }
-            
-            .spec-item:hover {
-                transform: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .aircraft-image {
-                height: 250px;
-                max-width: 350px;
-            }
-            
-            .center-radar-display {
-                width: 240px;
-                height: 240px;
-            }
-        }
-    </style>
+    .flex{display:flex; gap:12px; flex-wrap:wrap}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Su-57 Felon</h1>
-            <p>Fifth-Generation Stealth Fighter Aircraft</p>
+  <div class="grid" aria-hidden="true"></div>
+  <header>
+    <div class="wrap hero">
+      <div>
+        <span class="badge">Lock • Track • Engage</span>
+        <h1 class="title headline">F‑22 Raptor <span style="color:var(--accent)">/</span> Air‑Dominance Showcase</h1>
+        <p class="sub">Stealth. Supercruise. Super‑maneuverability. Explore key performance metrics and run quick engineering calcs like thrust‑to‑weight, wing loading, and a simplified turn‑rate estimator.</p>
+        <div class="flex" style="margin-top:12px">
+          <a class="btn" href="#calc">Open Engineering Calculator ▸</a>
+          <a class="btn secondary" href="#specs">View Specs</a>
         </div>
-
-        <div class="main-content">
-            <div class="left-info">
-                <div class="info-card">
-                    <h3>General Specifications</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Length:</span>
-                        <span class="spec-value">19.8 m (65 ft)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Wingspan:</span>
-                        <span class="spec-value">14.0 m (46 ft)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Height:</span>
-                        <span class="spec-value">4.74 m (15.6 ft)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Max Weight:</span>
-                        <span class="spec-value">35,000 kg (77,162 lb)</span>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <h3>Performance</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Max Speed:</span>
-                        <span class="spec-value">Mach 2.0 (2,100 km/h)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Service Ceiling:</span>
-                        <span class="spec-value">20,000 m (65,617 ft)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Range:</span>
-                        <span class="spec-value">3,500 km (2,175 mi)</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Engines:</span>
-                        <span class="spec-value">2× Saturn AL-41F1</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="center-aircraft">
-                <div class="aircraft-image">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/download-uLhbuA3cjye20owZ4rKElKKOQuwI5h.jpeg" alt="Su-57 Fighter Aircraft">
-                </div>
-                
-                <div class="center-radar-display">
-                    <div class="radar-grid"></div>
-                    <div class="radar-sweep"></div>
-                    <div class="radar-dot"></div>
-                    <div class="radar-dot"></div>
-                    <div class="radar-dot"></div>
-                    <div class="radar-dot"></div>
-                </div>
-            </div>
-
-            <div class="right-info">
-                <div class="info-card">
-                    <h3>Capabilities</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Stealth:</span>
-                        <span class="spec-value">Low RCS Design</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Supercruise:</span>
-                        <span class="spec-value">Mach 1.6</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Radar:</span>
-                        <span class="spec-value">N036 Byelka AESA</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">First Flight:</span>
-                        <span class="spec-value">January 29, 2010</span>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <h3>Armament</h3>
-                    <div class="spec-item">
-                        <span class="spec-label">Internal Bays:</span>
-                        <span class="spec-value">2 main + 2 side</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Missiles:</span>
-                        <span class="spec-value">R-77, R-74M</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Cannon:</span>
-                        <span class="spec-value">30mm GSh-30-1</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Payload:</span>
-                        <span class="spec-value">10,000 kg max</span>
-                    </div>
-                </div>
-            </div>
+        <div class="stats" id="specs">
+          <div class="stat"><div class="k" id="stat-tw">1.26:1</div><div class="muted">Thrust‑to‑Weight (est.)</div></div>
+          <div class="stat"><div class="k">M&nbsp;2.0+</div><div class="muted">Top Speed</div></div>
+          <div class="stat"><div class="k">> 65,000&nbsp;ft</div><div class="muted">Ceiling</div></div>
+          <div class="stat"><div class="k">~ 78 m²</div><div class="muted">Wing Area</div></div>
         </div>
+      </div>
+      <div>
+        <div class="jet" aria-label="F‑22 graphic with HUD">
+          <!-- Minimalist F‑22 silhouette (inline SVG) -->
+          <svg viewBox="0 0 1000 562" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="jetGrad" x1="0" x2="1">
+                <stop offset="0%" stop-color="#1b2a2e"/>
+                <stop offset="100%" stop-color="#0e171a"/>
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00ffa8" flood-opacity="0.3" />
+              </filter>
+            </defs>
+            <rect width="100%" height="100%" fill="#081014"/>
+            <g transform="translate(500,281) scale(1.15)" fill="url(#jetGrad)" stroke="#0f2226" stroke-width="3">
+              <path d="M0,-210 l25,55 70,35 40,50 40,20 60,30 -65,30 -55,0 -55,25 -60,0 -55,-25 -55,0 -65,-30 60,-30 40,-20 40,-50 70,-35 25,-55 z"/>
+              <path d="M0,-145 l18,25 0,60 -18,0 -18,0 0,-60 z"/>
+              <circle cx="-80" cy="0" r="6" fill="#0aef98" filter="url(#glow)"/>
+              <circle cx="80" cy="0" r="6" fill="#0aef98" filter="url(#glow)"/>
+            </g>
+            <!-- Sweep line for radar vibe -->
+            <g>
+              <rect id="sweep" x="0" y="0" width="1000" height="562" fill="url(#fade)" opacity="0.12">
+                <animate attributeName="x" from="-1000" to="1000" dur="6s" repeatCount="indefinite"/>
+              </rect>
+              <defs>
+                <linearGradient id="fade" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#00ffa8" stop-opacity="0"/>
+                  <stop offset="60%" stop-color="#00ffa8" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#00ffa8" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </g>
+          </svg>
+          <div class="hud"></div>
+        </div>
+      </div>
     </div>
+  </header>
+
+  <main class="wrap" id="calc">
+    <h2 class="title" style="font-size:28px; margin:18px 0">Engineering Calculator</h2>
+    <div class="card calc">
+      <section>
+        <div class="flex" style="justify-content:space-between; align-items:center">
+          <span class="tag">Units: SI (kN, kgs, m²)</span>
+          <button class="btn secondary" type="button" id="presetF22">Load F‑22 Preset</button>
+        </div>
+        <div class="gridline"></div>
+        <div class="field">
+          <label for="thrust">Total Thrust (kN)</label>
+          <input id="thrust" type="number" step="1" min="1" value="312" />
+        </div>
+        <div class="field">
+          <label for="weight">Weight (kg) — current gross</label>
+          <input id="weight" type="number" step="100" min="1000" value="30000" />
+        </div>
+        <div class="field">
+          <label for="wing">Wing Area (m²)</label>
+          <input id="wing" type="number" step="0.5" min="10" value="78" />
+        </div>
+        <div class="field">
+          <label for="cl">Lift Coefficient (C<sub>L</sub>) — est. at turn</label>
+          <input id="cl" type="number" step="0.05" min="0.2" max="2.0" value="1.2" />
+        </div>
+        <div class="field">
+          <label for="rho">Air Density ρ (kg/m³) — sea level ≈ 1.225</label>
+          <input id="rho" type="number" step="0.01" min="0.1" max="1.5" value="1.225" />
+        </div>
+        <div class="flex" style="margin-top:12px">
+          <button class="btn" id="compute">Compute</button>
+          <button class="btn secondary" id="reset">Reset</button>
+        </div>
+      </section>
+      <section>
+        <h3 class="title" style="font-size:20px">Results</h3>
+        <div class="gridline"></div>
+        <div class="field">
+          <label>Thrust‑to‑Weight</label>
+          <div><span id="outTW" class="k">—</span> <span class="muted">(dimensionless)</span></div>
+        </div>
+        <div class="field">
+          <label>Wing Loading</label>
+          <div><span id="outWL" class="k">—</span> <span class="muted">N/m²</span></div>
+        </div>
+        <div class="field">
+          <label>Estimated Sustained Turn Rate</label>
+          <div><span id="outTR" class="k">—</span> <span class="muted">deg/s (very rough)</span></div>
+        </div>
+        <div class="field">
+          <label>Rule‑of‑Thumb Climb Capability</label>
+          <div><span id="outClimb" class="k">—</span> <span class="muted">m/s (back‑of‑envelope)</span></div>
+        </div>
+        <p class="muted" style="margin-top:10px">These are simplified, educational estimates using steady‑level and energy‑method heuristics; actual classified performance will differ.</p>
+      </section>
+    </div>
+
+    <section style="margin-top:28px">
+      <h2 class="title" style="font-size:22px">Tactical Notes</h2>
+      <div class="card">
+        <ul>
+          <li>Low observable shaping + internal bays reduce radar cross‑section for first‑look/first‑shot advantage.</li>
+          <li>Thrust vectoring enables post‑stall maneuvers (e.g., high‑alpha turns) for nose‑pointing at low speed.</li>
+          <li>Sensor fusion & data‑link provide superior situational awareness in beyond‑visual‑range (BVR) engagements.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="wrap" style="padding:12px 0 40px">
+      <p class="muted">Disclaimer: This fan‑made page is for learning and design practice. Numbers are public estimates and may vary by configuration and conditions.</p>
+      <p class="warn">Do not use for real‑world flight planning or tactical decisions.</p>
+    </footer>
+  </main>
+
+  <script>
+    const g = 9.80665; // m/s^2
+    const el = id => document.getElementById(id);
+    const fmt = (n, d=2) => Number.isFinite(n) ? n.toFixed(d) : '—';
+
+    function compute() {
+      const thrust_kN = parseFloat(el('thrust').value); // kN
+      const mass_kg = parseFloat(el('weight').value);   // kg
+      const wing_m2 = parseFloat(el('wing').value);
+      const Cl = parseFloat(el('cl').value);
+      const rho = parseFloat(el('rho').value);
+
+      if([thrust_kN, mass_kg, wing_m2, Cl, rho].some(x => !Number.isFinite(x) || x <= 0)){
+        alert('Please enter positive numeric values.');
+        return;
+      }
+
+      const thrust_N = thrust_kN * 1000;         // convert kN → N
+      const weight_N = mass_kg * g;              // W = m g
+
+      // Thrust-to-weight (static-ish)
+      const tw = thrust_N / weight_N;
+
+      // Wing loading W/S (N/m^2)
+      const wingLoading = weight_N / wing_m2;
+
+      // Very rough sustained turn rate estimate (deg/s):
+      // Using load factor n = (2 * W/S) / (rho * V^2) * (Cl)  → rearrange for V at n≈7 (typical sustained high‑G)
+      // Then ω = g * sqrt(n^2 - 1) / V  (rad/s)  → convert to deg/s
+      // We pick target n = min(9, 1 + 6 * tw) to reflect more thrust → higher sustainable G, capped ~9G.
+      const n = Math.min(9, 1 + 6 * tw);
+      const V = Math.sqrt((2 * wingLoading * n) / (rho * Cl)); // m/s
+      const omega_rad = g * Math.sqrt(Math.max(n*n - 1, 0)) / V;
+      const turnRate_deg = omega_rad * (180/Math.PI);
+
+      // Back‑of‑envelope climb rate ~ (Excess Power) / Weight
+      // P_excess ≈ Thrust * V_opt - Drag * V_opt. Without drag polar, use a toy model: V_opt ≈ 150 m/s and drag ~ 0.3*W
+      const Vopt = 150; // m/s, heuristic
+      const drag_est = 0.30 * weight_N; // placeholder
+      const P_excess = Math.max(thrust_N * Vopt - drag_est * Vopt, 0); // W
+      const climb_ms = P_excess / weight_N; // m/s
+
+      el('outTW').textContent = fmt(tw, 2) + ':1';
+      el('outWL').textContent = fmt(wingLoading, 0);
+      el('outTR').textContent = fmt(turnRate_deg, 1);
+      el('outClimb').textContent = fmt(climb_ms, 0);
+
+      // Update stat badge on hero
+      const s = document.getElementById('stat-tw');
+      if(s) s.textContent = fmt(tw, 2) + ':1';
+    }
+
+    function resetInputs(){
+      el('thrust').value = 312; // kN (2x ~156 kN with afterburner)
+      el('weight').value = 30000; // kg (example gross)
+      el('wing').value = 78; // m^2
+      el('cl').value = 1.2;
+      el('rho').value = 1.225;
+      el('outTW').textContent = '—';
+      el('outWL').textContent = '—';
+      el('outTR').textContent = '—';
+      el('outClimb').textContent = '—';
+    }
+
+    el('compute').addEventListener('click', compute);
+    el('reset').addEventListener('click', resetInputs);
+
+    // Preset approximate public figures
+    el('presetF22').addEventListener('click', ()=>{
+      el('thrust').value = 2 * 156;  // two Pratt & Whitney F119 afterburning turbofans (~156 kN each)
+      el('weight').value = 32000;    // kg (representative combat weight)
+      el('wing').value = 78;         // m^2
+      el('cl').value = 1.25;         // at high‑alpha
+      el('rho').value = 1.225;       // sea level
+      compute();
+    });
+
+    // Auto compute once on load
+    compute();
+  </script>
 </body>
 </html>
-
