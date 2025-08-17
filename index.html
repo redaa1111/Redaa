@@ -1,160 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>F-22 Raptor Showcase</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: #0ff;
-      overflow-x: hidden;
-    }
-    header {
-      text-align: center;
-      padding: 1rem;
-      border-bottom: 2px solid #0ff;
-      background: rgba(0,0,0,0.8);
-    }
-    h1 {
-      font-size: 2rem;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #0ff;
-    }
-    .radar {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/0/08/Radar_animation.gif') center/cover no-repeat;
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      opacity:0.2;
-      z-index:-2;
-    }
-    .hud-grid {
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background-image:
-        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0,255,204,0.2) 50px),
-        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0,255,204,0.2) 50px);
-      z-index:-1;
-    }
-    .f22-svg {
-      display: block;
-      margin: 2rem auto;
-      max-width: 400px;
-      filter: drop-shadow(0 0 10px #0ff);
-    }
-    .f22-photo {
-      display: block;
-      margin: 1rem auto;
-      max-width: 600px;
-      width: 100%;
-      border: 2px solid #0ff;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #0ff;
-    }
-    .calculator {
-      max-width: 500px;
-      margin: 2rem auto;
-      padding: 1rem;
-      border: 2px solid #0ff;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.6);
-    }
-    .calculator label {
-      display: block;
-      margin-top: 1rem;
-    }
-    .calculator input {
-      width: 100%;
-      padding: 0.5rem;
-      background: #000;
-      border: 1px solid #0ff;
-      color: #0ff;
-    }
-    .calculator button {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      background: #0ff;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .results {
-      margin-top: 1rem;
-      padding: 0.5rem;
-      border: 1px solid #0ff;
-      background: rgba(0,0,0,0.5);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Su-57 War Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0b0c10;
+            color: #c5c6c7;
+        }
+
+        header {
+            background-color: #1f2833;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #66fcf1;
+        }
+
+        header h1 {
+            margin: 0;
+            color: #66fcf1;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        .showcase {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px;
+            gap: 30px;
+        }
+
+        .card {
+            background: #1f2833;
+            border: 2px solid #45a29e;
+            border-radius: 15px;
+            width: 300px;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #66fcf1;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            margin: 0 0 10px 0;
+            color: #66fcf1;
+        }
+
+        .card p {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .specs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .spec {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .spec span:first-child {
+            color: #45a29e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1f2833;
+            border-top: 3px solid #66fcf1;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
-  <div class="radar"></div>
-  <div class="hud-grid"></div>
 
-  <header>
-    <h1>F-22 Raptor — War-Style Engineering Showcase</h1>
-  </header>
+    <header>
+        <h1>Sukhoi Su-57 - Russian Stealth Fighter</h1>
+    </header>
 
-  <!-- Inline SVG F-22 -->
-  <svg class="f22-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-    <path fill="none" stroke="#0ff" stroke-width="4" 
-      d="M256 32 L300 100 L400 120 L420 200 L360 280 L370 400 L256 480 L142 400 L152 280 L92 200 L112 120 L212 100 Z"/>
-  </svg>
+    <section class="showcase">
+        <div class="card">
+            <img src="Sukhoi Su-57.jpeg" alt="Su-57 Fighter">
+            <h2>Overview</h2>
+            <p>The Su-57 is a fifth-generation stealth multirole fighter aircraft, designed for air superiority and attack missions. It combines advanced avionics, stealth technology, and super-maneuverability.</p>
+        </div>
 
-  <!-- Real F-22 photo -->
-  <img class="f22-photo" src="https://www.lockheedmartin.com/content/dam/lockheed-martin/aero/photo/f-22/F-22%20Front%20Flight.jpg" alt="F-22 Raptor">
+        <div class="card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Radar_icon.png" alt="Radar">
+            <h2>Radar & Sensors</h2>
+            <p>Equipped with advanced AESA radar capable of detecting targets at long distances. Integrated sensor suite enables simultaneous air and ground target tracking.</p>
+        </div>
 
-  <!-- Calculator -->
-  <div class="calculator">
-    <h2>Engineering Calculator</h2>
-    <label for="thrust">Thrust (kN)</label>
-    <input type="number" id="thrust" placeholder="Example: 156">
+        <div class="card">
+            <h2>Physical Specifications</h2>
+            <div class="specs">
+                <div class="spec"><span>Length:</span> <span>20.1 m</span></div>
+                <div class="spec"><span>Wingspan:</span> <span>14 m</span></div>
+                <div class="spec"><span>Height:</span> <span>4.7 m</span></div>
+                <div class="spec"><span>Max Speed:</span> <span>2,600 km/h</span></div>
+                <div class="spec"><span>Service Ceiling:</span> <span>20,000 m</span></div>
+                <div class="spec"><span>Combat Range:</span> <span>1,500 km</span></div>
+            </div>
+        </div>
 
-    <label for="weight">Weight (kg)</label>
-    <input type="number" id="weight" placeholder="Example: 19700">
+        <div class="card">
+            <h2>Skills & Capabilities</h2>
+            <ul>
+                <li>Stealth Technology</li>
+                <li>Supermaneuverability</li>
+                <li>Advanced Avionics</li>
+                <li>Long-Range Target Detection</li>
+                <li>Multirole Combat</li>
+                <li>Air-to-Air & Air-to-Ground Missiles</li>
+            </ul>
+        </div>
+    </section>
 
-    <label for="wing">Wing Area (m²)</label>
-    <input type="number" id="wing" placeholder="Example: 78">
+    <footer>
+        &copy; 2025 War Aviation Showcase
+    </footer>
 
-    <button onclick="calculate()">Calculate</button>
-    <button onclick="preset()">Use F-22 Values</button>
-
-    <div class="results" id="results">Results will appear here...</div>
-  </div>
-
-  <script>
-    function calculate() {
-      const thrust = parseFloat(document.getElementById('thrust').value);
-      const weight = parseFloat(document.getElementById('weight').value);
-      const wing = parseFloat(document.getElementById('wing').value);
-
-      if (isNaN(thrust) || isNaN(weight) || isNaN(wing)) {
-        document.getElementById('results').innerText = "⚠ Please enter all values.";
-        return;
-      }
-
-      const thrustToWeight = thrust * 1000 / (weight * 9.81);
-      const wingLoading = weight * 9.81 / wing;
-      const turnRate = (thrustToWeight * 30).toFixed(2);
-      const climbRate = (thrustToWeight * 315).toFixed(2);
-
-      document.getElementById('results').innerHTML = `
-        <b>Thrust-to-Weight:</b> ${thrustToWeight.toFixed(2)} <br>
-        <b>Wing Loading:</b> ${wingLoading.toFixed(2)} N/m² <br>
-        <b>Estimated Turn Rate:</b> ${turnRate} °/s <br>
-        <b>Climb Rate:</b> ${climbRate} m/s
-      `;
-    }
-
-    function preset() {
-      document.getElementById('thrust').value = 156;
-      document.getElementById('weight').value = 19700;
-      document.getElementById('wing').value = 78;
-      calculate();
-    }
-  </script>
 </body>
 </html>
-
