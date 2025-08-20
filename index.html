@@ -3,520 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Showcase — F-22 Raptor</title>
-    <style>
-        /* Reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --neon-green: #00ff88;
-            --dark-bg: #0b0f14;
-            --gray-text: #b7c1c9;
-            --darker-gray: #1a1f26;
-            --light-gray: #2a3038;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--gray-text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Courier New', monospace;
-            color: var(--neon-green);
-            font-weight: bold;
-        }
-
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(11, 15, 20, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--neon-green);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            color: var(--neon-green);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--gray-text);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-family: 'Courier New', monospace;
-        }
-
-        .nav-links a:hover,
-        .nav-links a:focus {
-            color: var(--neon-green);
-            outline: 2px solid var(--neon-green);
-            outline-offset: 2px;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('f22.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .radar-animation {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 255, 136, 0.1) 45deg, transparent 90deg);
-            animation: radar-sweep 4s linear infinite;
-            opacity: 0.3;
-        }
-
-        @keyframes radar-sweep {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .hero-content {
-            max-width: 800px;
-            padding: 0 1rem;
-            z-index: 2;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .hero p {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            margin-bottom: 2rem;
-            color: var(--gray-text);
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.8rem 2rem;
-            background: transparent;
-            border: 2px solid var(--neon-green);
-            color: var(--neon-green);
-            text-decoration: none;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn:hover,
-        .btn:focus {
-            background: var(--neon-green);
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-green);
-            outline: none;
-        }
-
-        .btn:focus {
-            outline: 2px solid var(--neon-green);
-            outline-offset: 2px;
-        }
-
-        /* Features Grid */
-        .features {
-            padding: 5rem 0;
-            background: var(--darker-gray);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--light-gray);
-            padding: 2rem;
-            border: 1px solid var(--neon-green);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
-        }
-
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: var(--gray-text);
-        }
-
-        /* Stats Strip */
-        .stats {
-            background: var(--dark-bg);
-            padding: 3rem 0;
-            border-top: 1px solid var(--neon-green);
-            border-bottom: 1px solid var(--neon-green);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-item h3 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--gray-text);
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Gallery */
-        .gallery {
-            padding: 5rem 0;
-            background: var(--darker-gray);
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            border: 1px solid var(--neon-green);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .gallery-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            color: var(--neon-green);
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-
-        /* CTA Section */
-        .cta {
-            background: var(--dark-bg);
-            padding: 4rem 0;
-            text-align: center;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: var(--gray-text);
-        }
-
-        .cta .btn {
-            font-size: 1.1rem;
-            padding: 1rem 3rem;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--darker-gray);
-            padding: 2rem 0;
-            text-align: center;
-            border-top: 1px solid var(--neon-green);
-        }
-
-        .footer p {
-            color: var(--gray-text);
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 640px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .radar-animation {
-                width: 200px;
-                height: 200px;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        /* Focus states for accessibility */
-        *:focus {
-            outline: 2px solid var(--neon-green);
-            outline-offset: 2px;
-        }
-    </style>
+    <title>The Big Bang: A Journey Through Time</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">F-22 RAPTOR</a>
-            <ul class="nav-links">
-                <li><a href="#features">SPECS</a></li>
-                <li><a href="#gallery">GALLERY</a></li>
-                <li><a href="#stats">STATS</a></li>
-                <li><a href="#contact">CONTACT</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="radar-animation"></div>
-        <div class="hero-content">
-            <h1>F-22 RAPTOR</h1>
-            <p>The world's most advanced tactical fighter. Unmatched air superiority through stealth, speed, and precision.</p>
-            <div class="hero-buttons">
-                <a href="#features" class="btn">EXPLORE SPECS</a>
-                <a href="#gallery" class="btn">VIEW GALLERY</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">TACTICAL ADVANTAGES</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>STEALTH TECHNOLOGY</h3>
-                    <p>Advanced radar-absorbing materials and angular design make the F-22 virtually invisible to enemy detection systems.</p>
+    <div class="universe" id="universe">
+        <div class="stage-container" id="stageContainer">
+            <!-- Stage 0: Introduction -->
+            <div class="stage active" data-stage="0">
+                <div class="content">
+                    <h1 class="stage-title">The Big Bang</h1>
+                    <h2 class="stage-subtitle">A Journey Through 13.8 Billion Years</h2>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> We are about to witness the most extraordinary event in cosmic history - the birth of space, time, matter, and energy itself.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> Before this moment, there was no "before." We stand at the threshold of existence itself, where physics meets metaphysics.
+                    </p>
                 </div>
-                <div class="feature-card">
-                    <h3>SUPERCRUISE SPEED</h3>
-                    <p>Sustained supersonic flight without afterburners, maintaining Mach 1.5+ speeds for extended periods.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>ADVANCED AVIONICS</h3>
-                    <p>Integrated sensor fusion provides unparalleled situational awareness and target acquisition capabilities.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>RADAR EVASION</h3>
-                    <p>Low observable technology reduces radar cross-section to the size of a marble from most angles.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>THRUST VECTORING</h3>
-                    <p>2D thrust vectoring nozzles provide exceptional maneuverability and control in all flight regimes.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>AIR DOMINANCE</h3>
-                    <p>Designed for air-to-air combat superiority with beyond visual range engagement capabilities.</p>
+                <div class="visual-container">
+                    <div class="singularity"></div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Stats Section -->
-    <section id="stats" class="stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h3>MACH 2.25</h3>
-                    <p>MAX SPEED</p>
+            <!-- Stage 1: Planck Epoch -->
+            <div class="stage" data-stage="1">
+                <div class="content">
+                    <h1 class="stage-title">Planck Epoch</h1>
+                    <h2 class="stage-subtitle">0 to 10⁻⁴³ seconds</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10³² K</span>
+                        <span>Size: 10⁻³⁵ meters</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> All four fundamental forces are unified. Quantum gravity dominates. Space and time themselves are quantized and uncertain.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> This is the realm of pure potential - where the very concepts of existence and non-existence blur into quantum uncertainty.
+                    </p>
                 </div>
-                <div class="stat-item">
-                    <h3>1,839 MI</h3>
-                    <p>COMBAT RANGE</p>
+                <div class="visual-container">
+                    <div class="quantum-foam">
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <h3>65,000 FT</h3>
-                    <p>SERVICE CEILING</p>
+            </div>
+
+            <!-- Stage 2: Grand Unification -->
+            <div class="stage" data-stage="2">
+                <div class="content">
+                    <h1 class="stage-title">Grand Unification Epoch</h1>
+                    <h2 class="stage-subtitle">10⁻⁴³ to 10⁻³⁶ seconds</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10²⁸ K</span>
+                        <span>Forces: 3 unified</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Gravity separates from the other forces. The strong, weak, and electromagnetic forces remain unified as the electronuclear force.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The first great symmetry breaking - the universe begins to differentiate, choosing specific paths from infinite possibilities.
+                    </p>
                 </div>
-                <div class="stat-item">
-                    <h3>195</h3>
-                    <p>AIRCRAFT BUILT</p>
+                <div class="visual-container">
+                    <div class="force-separation">
+                        <div class="force gravity">Gravity</div>
+                        <div class="unified-forces">
+                            <div class="force strong">Strong</div>
+                            <div class="force weak">Weak</div>
+                            <div class="force em">EM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 3: Cosmic Inflation -->
+            <div class="stage" data-stage="3">
+                <div class="content">
+                    <h1 class="stage-title">Cosmic Inflation</h1>
+                    <h2 class="stage-subtitle">10⁻³⁶ to 10⁻³² seconds</h2>
+                    <div class="stage-stats">
+                        <span>Expansion: 10²⁶ times</span>
+                        <span>Speed: Faster than light</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Exponential expansion driven by the inflaton field. Space itself expands faster than light, stretching quantum fluctuations to cosmic scales.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The universe makes its first great leap of faith - expanding into the unknown, creating the stage for all future complexity.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="inflation-field">
+                        <div class="expanding-space"></div>
+                        <div class="quantum-fluctuation"></div>
+                        <div class="quantum-fluctuation"></div>
+                        <div class="quantum-fluctuation"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 4: Electroweak Epoch -->
+            <div class="stage" data-stage="4">
+                <div class="content">
+                    <h1 class="stage-title">Electroweak Epoch</h1>
+                    <h2 class="stage-subtitle">10⁻³² to 10⁻¹² seconds</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10¹⁵ K</span>
+                        <span>Forces: 2 + 2</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> The strong force separates. Electromagnetic and weak forces remain unified. W and Z bosons are massless.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> Further differentiation emerges - the universe continues to break symmetries, choosing specific laws from the realm of possibilities.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="electroweak-field">
+                        <div class="boson w">W</div>
+                        <div class="boson z">Z</div>
+                        <div class="boson photon">γ</div>
+                        <div class="field-lines"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 5: Quark Epoch -->
+            <div class="stage" data-stage="5">
+                <div class="content">
+                    <h1 class="stage-title">Quark Epoch</h1>
+                    <h2 class="stage-subtitle">10⁻¹² to 10⁻⁶ seconds</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10¹² K</span>
+                        <span>State: Quark-gluon plasma</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> All four forces are now distinct. Quarks and gluons exist freely in a hot, dense plasma. The Higgs field gives particles mass.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The fundamental building blocks of matter emerge - the universe begins to write the alphabet from which all future complexity will be spelled.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="quark-plasma">
+                        <div class="quark up">u</div>
+                        <div class="quark down">d</div>
+                        <div class="quark strange">s</div>
+                        <div class="gluon"></div>
+                        <div class="gluon"></div>
+                        <div class="gluon"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 6: Hadron Epoch -->
+            <div class="stage" data-stage="6">
+                <div class="content">
+                    <h1 class="stage-title">Hadron Epoch</h1>
+                    <h2 class="stage-subtitle">10⁻⁶ to 1 second</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10¹⁰ K</span>
+                        <span>Formation: Protons & Neutrons</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Quarks combine to form hadrons - protons and neutrons. The strong force confines quarks permanently within these particles.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The first stable structures emerge - the universe learns to build, creating lasting forms from fleeting interactions.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="hadron-formation">
+                        <div class="hadron proton">
+                            <div class="quark">u</div>
+                            <div class="quark">u</div>
+                            <div class="quark">d</div>
+                        </div>
+                        <div class="hadron neutron">
+                            <div class="quark">u</div>
+                            <div class="quark">d</div>
+                            <div class="quark">d</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 7: Lepton Epoch -->
+            <div class="stage" data-stage="7">
+                <div class="content">
+                    <h1 class="stage-title">Lepton Epoch</h1>
+                    <h2 class="stage-subtitle">1 to 10 seconds</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10⁹ K</span>
+                        <span>Particles: Electrons, Neutrinos</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Leptons (electrons, muons, neutrinos) dominate the universe's mass-energy. Most hadrons have annihilated, leaving a small excess of matter.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The great asymmetry reveals itself - why does anything exist at all? The universe's preference for matter over antimatter becomes apparent.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="lepton-soup">
+                        <div class="lepton electron">e⁻</div>
+                        <div class="lepton positron">e⁺</div>
+                        <div class="lepton neutrino">ν</div>
+                        <div class="annihilation"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 8: Big Bang Nucleosynthesis -->
+            <div class="stage" data-stage="8">
+                <div class="content">
+                    <h1 class="stage-title">Big Bang Nucleosynthesis</h1>
+                    <h2 class="stage-subtitle">10 seconds to 20 minutes</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10⁸ K</span>
+                        <span>Elements: H, He, Li</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Protons and neutrons fuse to form the first atomic nuclei. About 75% hydrogen and 25% helium are created, with traces of lithium.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The universe begins its first act of creation - forging the elements that will one day become stars, planets, and life itself.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="nucleosynthesis">
+                        <div class="nucleus hydrogen">
+                            <div class="proton">p</div>
+                        </div>
+                        <div class="nucleus helium">
+                            <div class="proton">p</div>
+                            <div class="proton">p</div>
+                            <div class="neutron">n</div>
+                            <div class="neutron">n</div>
+                        </div>
+                        <div class="fusion-reaction"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 9: Photon Epoch -->
+            <div class="stage" data-stage="9">
+                <div class="content">
+                    <h1 class="stage-title">Photon Epoch</h1>
+                    <h2 class="stage-subtitle">3 minutes to 380,000 years</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 10⁴ K</span>
+                        <span>State: Plasma</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> The universe is dominated by photons. Matter exists as a hot plasma of nuclei and free electrons. Light cannot travel far due to constant scattering.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The universe enters its "dark age" - opaque to light, yet pregnant with potential. Like a cosmic cocoon, transformation happens in darkness.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="photon-plasma">
+                        <div class="photon"></div>
+                        <div class="photon"></div>
+                        <div class="photon"></div>
+                        <div class="electron free">e⁻</div>
+                        <div class="nucleus">H⁺</div>
+                        <div class="scattering"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 10: Recombination -->
+            <div class="stage" data-stage="10">
+                <div class="content">
+                    <h1 class="stage-title">Recombination Era</h1>
+                    <h2 class="stage-subtitle">380,000 years</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 3,000 K</span>
+                        <span>Event: First atoms form</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Electrons combine with nuclei to form the first neutral atoms. The universe becomes transparent to light. The cosmic microwave background is released.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> "Let there be light!" The universe opens its eyes for the first time, and light begins its eternal journey through space.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="recombination">
+                        <div class="atom forming">
+                            <div class="nucleus">H⁺</div>
+                            <div class="electron orbiting">e⁻</div>
+                        </div>
+                        <div class="cmb-photon"></div>
+                        <div class="transparency-wave"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 11: Dark Ages -->
+            <div class="stage" data-stage="11">
+                <div class="content">
+                    <h1 class="stage-title">Cosmic Dark Ages</h1>
+                    <h2 class="stage-subtitle">380,000 to 150 million years</h2>
+                    <div class="stage-stats">
+                        <span>Temperature: 100 K</span>
+                        <span>State: Neutral gas</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> No stars exist yet. The universe is filled with neutral hydrogen and helium gas. Dark matter begins to clump, forming the scaffolding for future structures.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> In the darkness, the seeds of complexity are planted. Sometimes the most profound changes happen in silence and shadow.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="dark-ages">
+                        <div class="dark-matter-web"></div>
+                        <div class="gas-cloud">
+                            <div class="hydrogen-atom">H</div>
+                            <div class="helium-atom">He</div>
+                        </div>
+                        <div class="gravitational-pull"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 12: First Stars -->
+            <div class="stage" data-stage="12">
+                <div class="content">
+                    <h1 class="stage-title">First Stars (Population III)</h1>
+                    <h2 class="stage-subtitle">150 million to 1 billion years</h2>
+                    <div class="stage-stats">
+                        <span>Mass: 100-1000 solar masses</span>
+                        <span>Composition: Pure H & He</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Massive, metal-free stars ignite nuclear fusion. They burn bright and die young, creating the first heavy elements in their cores and explosive deaths.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The universe lights its first candles against the darkness. In their brief, brilliant lives, these stellar giants sacrifice themselves to create the elements of complexity.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="first-stars">
+                        <div class="massive-star">
+                            <div class="core fusion">
+                                <div class="element">C</div>
+                                <div class="element">O</div>
+                                <div class="element">Si</div>
+                            </div>
+                            <div class="stellar-wind"></div>
+                        </div>
+                        <div class="supernova-explosion"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 13: Galaxy Formation -->
+            <div class="stage" data-stage="13">
+                <div class="content">
+                    <h1 class="stage-title">Galaxy Formation</h1>
+                    <h2 class="stage-subtitle">1 to 3 billion years</h2>
+                    <div class="stage-stats">
+                        <span>Structure: Dark matter halos</span>
+                        <span>Stars: Population II</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> Dark matter halos collapse and merge. Gas falls into these wells, forming the first galaxies. Star formation accelerates with metal-enriched gas.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> The universe builds its first cities - vast communities of stars bound by gravity and illuminated by nuclear fire. Cosmic civilization begins.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="galaxy-formation">
+                        <div class="spiral-galaxy">
+                            <div class="galactic-center"></div>
+                            <div class="spiral-arm"></div>
+                            <div class="spiral-arm"></div>
+                            <div class="star-cluster">
+                                <div class="star"></div>
+                                <div class="star"></div>
+                                <div class="star"></div>
+                            </div>
+                        </div>
+                        <div class="dark-matter-halo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 14: Solar System Formation -->
+            <div class="stage" data-stage="14">
+                <div class="content">
+                    <h1 class="stage-title">Solar System Formation</h1>
+                    <h2 class="stage-subtitle">4.6 billion years ago</h2>
+                    <div class="stage-stats">
+                        <span>Location: Milky Way</span>
+                        <span>Process: Accretion disk</span>
+                    </div>
+                    <p class="stage-description">
+                        <strong>Physical:</strong> A molecular cloud collapses to form our Sun and solar system. Planets accrete from the protoplanetary disk through gravitational attraction and collisions.
+                    </p>
+                    <p class="stage-philosophy">
+                        <strong>Philosophical:</strong> In one small corner of the cosmos, the stage is set for the next great chapter - the emergence of life, consciousness, and the universe becoming aware of itself.
+                    </p>
+                </div>
+                <div class="visual-container">
+                    <div class="solar-system">
+                        <div class="sun"></div>
+                        <div class="planet mercury"></div>
+                        <div class="planet venus"></div>
+                        <div class="planet earth">
+                            <div class="moon"></div>
+                        </div>
+                        <div class="planet mars"></div>
+                        <div class="planet jupiter"></div>
+                        <div class="planet saturn">
+                            <div class="rings"></div>
+                        </div>
+                        <div class="planet uranus"></div>
+                        <div class="planet neptune"></div>
+                        <div class="asteroid-belt"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <h2 class="section-title">MISSION GALLERY</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor flying in formation">
-                    <div class="gallery-caption">Formation Flight Operations</div>
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" class="nav-btn">← Previous</button>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor taking off with afterburners">
-                    <div class="gallery-caption">Afterburner Takeoff Sequence</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor during aerial refueling">
-                    <div class="gallery-caption">Mid-Air Refueling Operations</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor cockpit showing advanced avionics">
-                    <div class="gallery-caption">Advanced Cockpit Systems</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor with weapons bay doors open">
-                    <div class="gallery-caption">Internal Weapons Bay</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor in maintenance hangar">
-                    <div class="gallery-caption">Maintenance Operations</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor silhouetted against sunset">
-                    <div class="gallery-caption">Patrol Mission at Dusk</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor on landing approach">
-                    <div class="gallery-caption">Landing Approach Vector</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/placeholder.svg?height=300&width=500" alt="F-22 Raptor with ground crew">
-                    <div class="gallery-caption">Ground Support Operations</div>
-                </div>
+                <span class="progress-text" id="progressText">Stage 0 of 14</span>
             </div>
+            <button id="nextBtn" class="nav-btn">Next →</button>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <h2>EXPLORE THE FUTURE OF AIR SUPERIORITY</h2>
-            <p>Discover the engineering marvel that defines modern air combat dominance.</p>
-            <a href="#contact" class="btn">LEARN MORE</a>
+        <!-- Timeline -->
+        <div class="timeline">
+            <div class="timeline-marker" data-stage="0">Singularity</div>
+            <div class="timeline-marker" data-stage="1">Planck</div>
+            <div class="timeline-marker" data-stage="2">GUT</div>
+            <div class="timeline-marker" data-stage="3">Inflation</div>
+            <div class="timeline-marker" data-stage="4">Electroweak</div>
+            <div class="timeline-marker" data-stage="5">Quarks</div>
+            <div class="timeline-marker" data-stage="6">Hadrons</div>
+            <div class="timeline-marker" data-stage="7">Leptons</div>
+            <div class="timeline-marker" data-stage="8">Nucleosynthesis</div>
+            <div class="timeline-marker" data-stage="9">Photons</div>
+            <div class="timeline-marker" data-stage="10">Recombination</div>
+            <div class="timeline-marker" data-stage="11">Dark Ages</div>
+            <div class="timeline-marker" data-stage="12">First Stars</div>
+            <div class="timeline-marker" data-stage="13">Galaxies</div>
+            <div class="timeline-marker" data-stage="14">Solar System</div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="container">
-            <p>&copy; 2025 F-22 Raptor Showcase. All systems operational.</p>
-        </div>
-    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
