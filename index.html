@@ -3,285 +3,348 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ChatGPT — MVP Demo</title>
+  <title>Nikola Tesla — Showcase</title>
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --bg: #0b1020;
-      --panel: #121830;
-      --muted: #8a93ad;
-      --text: #e8ecf4;
-      --accent: #4f7cff;
-      --accent-2: #22c55e;
-      --danger: #ef4444;
-    }
-    * { box-sizing: border-box; }
+    /* Subtle starfield background */
     body {
-      margin: 0; height: 100vh; background: radial-gradient(1200px 800px at 20% -10%, #182243, transparent), var(--bg);
-      color: var(--text); font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Helvetica, Arial, sans-serif;
-      display: grid; place-items: center; padding: 16px;
+      background: radial-gradient(1200px 600px at 70% -20%, rgba(147,197,253,0.12), transparent 60%),
+                  radial-gradient(900px 500px at 10% 10%, rgba(192,132,252,0.10), transparent 60%),
+                  linear-gradient(180deg, #0b0e1a, #06070f 60%, #04050a);
     }
-    .app {
-      width: min(900px, 100%);
-      height: min(85vh, 880px);
-      display: grid; grid-template-rows: auto 1fr auto; gap: 10px;
-      background: linear-gradient(180deg, #141b34, #0f1530);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    .glass {
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
     }
-    .header {
-      display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .neon { text-shadow: 0 0 12px rgba(255, 243, 163, 0.8); }
+    .section {
+      scroll-margin-top: 96px;
     }
-    .logo { width: 28px; height: 28px; border-radius: 8px; background: conic-gradient(from 180deg at 50% 50%, var(--accent), #14b8a6, #a78bfa, var(--accent)); }
-    .title { font-weight: 700; letter-spacing: 0.2px; }
-    .subtitle { color: var(--muted); font-size: 12px; margin-left: auto; }
-
-    .messages {
-      padding: 16px; overflow: auto; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth;
+    /* Simple marquee-like glow for hero formula */
+    .glow {
+      animation: pulseGlow 3.5s ease-in-out infinite;
     }
-    .msg {
-      display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: flex-start;
+    @keyframes pulseGlow {
+      0%,100% { filter: drop-shadow(0 0 0 rgba(250, 204, 21, 0.0)); }
+      50%     { filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.35)); }
     }
-    .msg .avatar {
-      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: #fff; font-weight: 700;
-    }
-    .user .avatar { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-    .bot .avatar { background: linear-gradient(135deg, var(--accent), #14b8a6); }
-
-    .bubble {
-      background: #0d1430; border: 1px solid rgba(255,255,255,0.06); padding: 12px 14px; border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-      max-width: 100%;
-    }
-    .user .bubble { background: #0f193a; border-color: rgba(79, 124, 255, 0.35); }
-    .bot .bubble { background: #0e1b2e; }
-    .meta { margin-top: 6px; color: var(--muted); font-size: 11px; }
-
-    .input {
-      display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 12px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    textarea {
-      width: 100%; resize: none; min-height: 48px; max-height: 140px; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
-      background: #0d1430; color: var(--text); outline: none;
-    }
-    .actions { display: flex; gap: 8px; }
-    button {
-      display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: #0d1430; color: var(--text);
-      cursor: pointer; transition: transform 0.02s ease-in-out, opacity 0.2s; white-space: nowrap;
-    }
-    button.primary { background: linear-gradient(180deg, var(--accent), #3b5ed6); border-color: rgba(0,0,0,0.15); color: white; }
-    button:active { transform: translateY(1px); }
-
-    .typing { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
-    .dots { display: inline-flex; gap: 4px; }
-    .dot { width: 6px; height: 6px; border-radius: 6px; background: var(--muted); opacity: 0.3; animation: pulse 1.2s infinite; }
-    .dot:nth-child(2) { animation-delay: 0.2s }
-    .dot:nth-child(3) { animation-delay: 0.4s }
-    @keyframes pulse { 0%, 100% { opacity: 0.2; transform: translateY(0) } 50% { opacity: 1; transform: translateY(-2px) } }
-
-    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    pre { background: #0b1229; padding: 10px; border-radius: 10px; overflow: auto; border: 1px solid rgba(255,255,255,0.06); }
-
-    .bar { display: flex; gap: 8px; align-items: center; }
-    .pill { font-size: 11px; color: var(--muted); border: 1px dashed rgba(255,255,255,0.15); padding: 6px 8px; border-radius: 999px; }
-    .danger { color: #fecaca; border-color: rgba(239,68,68,.35); }
-
-    @media (max-width: 600px) {
-      .subtitle { display: none; }
-      .app { height: 90vh }
-    }
+    /* Smooth transitions */
+    .smooth { transition: all .25s ease; }
   </style>
 </head>
-<body>
-  <div class="app" role="application" aria-label="ChatGPT MVP">
-    <div class="header">
-      <div class="logo" aria-hidden="true"></div>
-      <div class="title">ChatGPT — MVP</div>
-      <div class="subtitle">Minimum Viable Product: text chat, short context, canned intelligence</div>
+<body class="text-gray-100 selection:bg-indigo-500/40 selection:text-white">
+
+  <!-- Header / Nav -->
+  <header class="fixed top-0 inset-x-0 z-40 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#top" class="font-extrabold tracking-wide text-xl">⚡ Nikola <span class="text-yellow-300">Tesla</span></a>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="#about" class="hover:text-yellow-300 smooth">About</a>
+        <a href="#inventions" class="hover:text-yellow-300 smooth">Inventions</a>
+        <a href="#timeline" class="hover:text-yellow-300 smooth">Timeline</a>
+        <a href="#demo" class="hover:text-yellow-300 smooth">AC Demo</a>
+        <a href="#quotes" class="hover:text-yellow-300 smooth">Quotes</a>
+        <a href="#gallery" class="hover:text-yellow-300 smooth">Gallery</a>
+      </nav>
+      <a href="#demo" class="md:hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm smooth">
+        Try Demo
+      </a>
     </div>
+  </header>
 
-    <div id="messages" class="messages" aria-live="polite"></div>
-
-    <form id="composer" class="input" autocomplete="off">
-      <div class="bar">
-        <span class="pill">Context: in-session only</span>
-        <span class="pill">No browsing</span>
-        <span class="pill danger">Mock AI (rules, not ML)</span>
+  <!-- Hero -->
+  <section id="top" class="pt-28 md:pt-32 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">
+          The Man Who <span class="text-indigo-300">Electrified</span> the World
+        </h1>
+        <p class="mt-4 text-gray-300 text-lg">
+          Nikola Tesla (1856–1943) — inventor, engineer, futurist. His vision powered the
+          modern world through <span class="text-yellow-300">alternating current</span>, induction motors,
+          high-voltage transformers, and wireless ideas far ahead of his time.
+        </p>
+        <div class="mt-6 flex gap-3">
+          <a href="#inventions" class="px-5 py-3 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 smooth">Explore Inventions</a>
+          <a href="#timeline" class="px-5 py-3 rounded-xl border border-white/20 hover:bg-white/10 smooth">See Timeline</a>
+        </div>
+        <div class="mt-8 text-2xl md:text-3xl font-semibold neon glow">“If you want to find the secrets of the universe, think in terms of <span class="text-yellow-300">energy</span>, frequency and vibration.”</div>
       </div>
-      <div style="grid-column: 1 / -1; display: contents"></div>
-      <textarea id="prompt" placeholder="Ask anything… (e.g., Explain MVP in 2 lines)" aria-label="Your message"></textarea>
-      <div class="actions">
-        <button type="button" id="clear" title="Clear chat">Clear</button>
-        <button class="primary" id="send" type="submit" title="Send">Send ▶</button>
-      </div>
-    </form>
-  </div>
 
+      <div class="relative">
+        <img
+          class="rounded-3xl w-full border border-white/10 shadow-2xl"
+          src="https://upload.wikimedia.org/wikipedia/commons/d/d4/N.Tesla.JPG"
+          alt="Nikola Tesla portrait"
+        />
+        <div class="absolute -bottom-4 -right-4 glass rounded-2xl px-4 py-3 text-sm">
+          <div class="text-yellow-300 font-semibold">AC Power Pioneer</div>
+          <div class="text-gray-300">Polyphase systems • Induction motor • Transformers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 glass rounded-3xl p-8">
+      <h2 class="text-2xl font-bold mb-3">About Nikola Tesla</h2>
+      <p class="text-gray-300 leading-relaxed">
+        Nikola Tesla was a Serbian-American inventor and electrical engineer whose development of
+        alternating current (AC) generation and transmission enabled the long-distance power grids we use today.
+        He filed hundreds of patents across motors, transformers, radio, X-rays, lighting, and wireless power.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-4 mt-6">
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+          <div class="text-gray-400 text-sm">Born</div>
+          <div class="text-white font-semibold">10 July 1856</div>
+          <div class="text-gray-400 text-sm">Smiljan, Austrian Empire</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+          <div class="text-gray-400 text-sm">Core Fields</div>
+          <div class="text-white font-semibold">AC Power, Motors, Radio, Resonance</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+          <div class="text-gray-400 text-sm">Notable Sites</div>
+          <div class="text-white font-semibold">Colorado Springs • Wardenclyffe • Niagara</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inventions -->
+  <section id="inventions" class="section py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold mb-6">Major Inventions & Ideas</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Alternating Current (AC)</h3>
+          <p class="text-gray-300">Polyphase systems enabling efficient power transmission and distribution.</p>
+          <div class="mt-3 text-sm text-gray-400">Generators • Transformers • Long-distance grid</div>
+        </article>
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Induction Motor</h3>
+          <p class="text-gray-300">Self-starting motor using a rotating magnetic field — a workhorse of industry.</p>
+          <div class="mt-3 text-sm text-gray-400">Three-phase • High reliability • Low maintenance</div>
+        </article>
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Tesla Coil & Resonance</h3>
+          <p class="text-gray-300">High-voltage transformer demonstrating resonance, wireless energy, and RF effects.</p>
+          <div class="mt-3 text-sm text-gray-400">Spark gaps • Resonant LC • High frequency</div>
+        </article>
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Radio & Remote Control</h3>
+          <p class="text-gray-300">Early radio transmission demonstrations and the first radio-controlled boat (1898).</p>
+          <div class="mt-3 text-sm text-gray-400">RF oscillators • Tuning • Control by waves</div>
+        </article>
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Hydropower at Niagara</h3>
+          <p class="text-gray-300">AC generation used to light cities and power industry — a historic milestone.</p>
+          <div class="mt-3 text-sm text-gray-400">Turbines • Generators • Transmission</div>
+        </article>
+        <article class="p-6 rounded-3xl glass hover:-translate-y-1 smooth">
+          <h3 class="text-xl font-semibold mb-2">Wardenclyffe Vision</h3>
+          <p class="text-gray-300">Ambitious plan for global wireless telegraphy and power (never completed).</p>
+          <div class="mt-3 text-sm text-gray-400">Long-range communication • Resonant earth</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section id="timeline" class="section py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold mb-6">Timeline</h2>
+      <ol class="relative border-l border-white/10 pl-6 space-y-6">
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1888</time>
+          <h3 class="text-lg font-semibold">Rotating Magnetic Field</h3>
+          <p class="text-gray-300">Publications and patents on polyphase AC systems and induction motors.</p>
+        </li>
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1891</time>
+          <h3 class="text-lg font-semibold">Tesla Coil</h3>
+          <p class="text-gray-300">High-frequency, high-voltage experiments; wireless lighting demonstrations.</p>
+        </li>
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1893</time>
+          <h3 class="text-lg font-semibold">World’s Columbian Exposition</h3>
+          <p class="text-gray-300">AC lighting that dazzled Chicago and the world.</p>
+        </li>
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1895–1896</time>
+          <h3 class="text-lg font-semibold">Niagara Hydropower</h3>
+          <p class="text-gray-300">First large-scale AC power plant goes online.</p>
+        </li>
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1898</time>
+          <h3 class="text-lg font-semibold">Radio-Controlled Boat</h3>
+          <p class="text-gray-300">Demonstration of wireless control at Madison Square Garden.</p>
+        </li>
+        <li>
+          <div class="absolute -left-2.5 w-5 h-5 rounded-full bg-yellow-400"></div>
+          <time class="text-yellow-300 font-semibold">1901–1906</time>
+          <h3 class="text-lg font-semibold">Wardenclyffe Tower</h3>
+          <p class="text-gray-300">Grand plan for worldwide wireless communication and power.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Interactive Demo: AC Wave -->
+  <section id="demo" class="section py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 glass rounded-3xl p-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <h2 class="text-2xl font-bold">Interactive: AC Wave</h2>
+          <p class="text-gray-300 mt-2">
+            Tesla’s AC systems use oscillating voltage. Drag the slider to change frequency and
+            watch the waveform update in real time.
+          </p>
+          <div class="mt-4">
+            <label class="text-sm text-gray-400">Frequency: <span id="freqLabel" class="text-yellow-300 font-semibold">50</span> Hz</label>
+            <input id="freq" type="range" min="1" max="200" value="50" class="w-full mt-2">
+          </div>
+        </div>
+        <div class="w-full md:w-1/2">
+          <canvas id="acCanvas" class="w-full rounded-2xl border border-white/10 bg-black/30" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quotes -->
+  <section id="quotes" class="section py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold mb-6">Words of Tesla</h2>
+      <div class="glass rounded-3xl p-8">
+        <div id="quoteText" class="text-xl md:text-2xl italic text-gray-100">“The present is theirs; the future, for which I have really worked, is mine.”</div>
+        <div class="mt-3 text-gray-400">— Nikola Tesla</div>
+        <div class="mt-6 flex gap-3">
+          <button id="prevQ" class="px-4 py-2 rounded-xl border border-white/15 hover:bg-white/10 smooth">Prev</button>
+          <button id="nextQ" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 smooth">Next</button>
+          <span class="text-sm text-gray-400 ml-auto" id="qIdx">1 / 4</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="section py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold mb-6">Gallery</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <figure class="glass rounded-3xl overflow-hidden">
+          <img class="w-full h-56 object-cover" src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Teslathinker.jpg" alt="Tesla Thinking" />
+          <figcaption class="p-4 text-sm text-gray-300">Tesla at work, c. 1896 (public domain)</figcaption>
+        </figure>
+        <figure class="glass rounded-3xl overflow-hidden">
+          <img class="w-full h-56 object-cover" src="https://upload.wikimedia.org/wikipedia/commons/0/07/Tesla_circa_1890.jpeg" alt="Tesla 1890" />
+          <figcaption class="p-4 text-sm text-gray-300">Portrait, circa 1890 (public domain)</figcaption>
+        </figure>
+        <figure class="glass rounded-3xl overflow-hidden">
+          <img class="w-full h-56 object-cover" src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Tesla_colorado_springs_experiment.jpg" alt="Colorado Springs Lab" />
+          <figcaption class="p-4 text-sm text-gray-300">Colorado Springs experiments (public domain)</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-gray-400">
+    Built with ❤️ — Educational showcase of Nikola Tesla. Images from Wikimedia Commons (public domain).
+  </footer>
+
+  <!-- Back to top -->
+  <a href="#top" class="fixed bottom-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 smooth" title="Back to top">↑</a>
+
+  <!-- Scripts -->
   <script>
-    /**
-     * ChatGPT MVP (frontend only):
-     * - Short in-session context
-     * - Simple rule-based responder (no network)
-     * - Typing indicator
-     * - Copyable, single-file demo
-     */
-
-    const els = {
-      messages: document.getElementById('messages'),
-      composer: document.getElementById('composer'),
-      prompt: document.getElementById('prompt'),
-      clear: document.getElementById('clear'),
-      send: document.getElementById('send'),
-    };
-
-    const state = {
-      history: [], // {role: 'user'|'assistant', content: string, ts: number}
-      maxTurns: 20,
-    };
-
-    function now() { return new Date(); }
-    function fmtTime(d) {
-      return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-    }
-
-    function addMessage(role, content) {
-      const wrap = document.createElement('div');
-      wrap.className = `msg ${role}`;
-      wrap.innerHTML = `
-        <div class="avatar" aria-hidden="true">${role === 'user' ? 'U' : 'G'}</div>
-        <div class="bubble">
-          <div class="content">${renderMarkdown(content)}</div>
-          <div class="meta">${role === 'user' ? 'You' : 'Assistant'} • ${fmtTime(now())}</div>
-        </div>`;
-      els.messages.appendChild(wrap);
-      els.messages.scrollTop = els.messages.scrollHeight;
-      state.history.push({ role, content, ts: Date.now() });
-      while (state.history.length > state.maxTurns * 2) state.history.shift();
-    }
-
-    function typingIndicator() {
-      const wrap = document.createElement('div');
-      wrap.className = 'msg bot';
-      wrap.id = 'typing';
-      wrap.innerHTML = `
-        <div class="avatar">G</div>
-        <div class="bubble">
-          <span class="typing">Thinking <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></span>
-          <div class="meta">Assistant • ${fmtTime(now())}</div>
-        </div>`;
-      els.messages.appendChild(wrap);
-      els.messages.scrollTop = els.messages.scrollHeight;
-      return () => wrap.remove();
-    }
-
-    function renderMarkdown(text) {
-      // ultra-light MD: code blocks ``` and inline `code`
-      let html = text
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      html = html.replace(/```([\s\S]*?)```/g, (m, p1) => `<pre><code>${p1}</code></pre>`);
-      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-      html = html.replace(/\n/g, '<br/>');
-      return html;
-    }
-
-    // --- Mock intelligence (MVP rules) ---
-    function respond(userText) {
-      const text = userText.trim();
-      const lower = text.toLowerCase();
-      const history = state.history.slice(-6); // short context window
-
-      // 1) Greetings
-      if (/^(hi|hello|hey)\b/.test(lower)) {
-        return `Hey! I'm a *mock* ChatGPT MVP. Ask me anything and I'll try to help in a concise way.`;
-      }
-      // 2) Who/what are you
-      if (/(who|what) are you|your (name|model)/.test(lower)) {
-        return `I'm a minimalist demo: text in → text out. No internet, no plugins, short memory. Great for quick drafts and answers.`;
-      }
-      // 3) Explain X in N words/lines
-      const explainMatch = lower.match(/explain (.+?) in (\d+) (word|words|line|lines)/);
-      if (explainMatch) {
-        const topic = explainMatch[1];
-        const n = Math.min(10, parseInt(explainMatch[2], 10) || 2);
-        return Array.from({length: n}, (_, i) => `${i+1}. ${titleCase(topic)} — key point ${i+1}.`).join('\n');
-      }
-      // 4) Summarize
-      if (/^summari[sz]e\b/.test(lower)) {
-        const lastUser = [...history].reverse().find(m => m.role === 'user' && m.content !== userText);
-        return lastUser ? `TL;DR: ${lastUser.content.slice(0, 140)}…` : `Give me text to summarize.`;
-      }
-      // 5) Code request
-      if (/\b(code|script|function)\b/.test(lower)) {
-        return `Here's a tiny example:\n\n\u0060\u0060\u0060js\nfunction hello(name){ return ` + "`Hello, ${name}!`" + ` }\nconsole.log(hello('world'));\n\u0060\u0060\u0060`;
-      }
-      // 6) MVP definition
-      if (/\bmvp\b/.test(lower)) {
-        return `**MVP** = Minimum Viable Product: smallest set of features that solves the core problem for early adopters, so you can learn fast with minimal build.`;
-      }
-      // 7) Light contextual echo
-      if (history.length) {
-        const prev = history.filter(m => m.role === 'user').map(m => m.content).pop() || '';
-        if (prev && prev !== userText && prev.split(' ').length < 16) {
-          return `About *${prev}*: ${generateGeneralAnswer(text)}`;
+    // Smooth scroll for in-page anchors (native behavior is already smooth on most browsers)
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href.length > 1) {
+          e.preventDefault();
+          document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
         }
+      });
+    });
+
+    /* AC Wave Demo */
+    const freqEl = document.getElementById('freq');
+    const freqLabel = document.getElementById('freqLabel');
+    const canvas = document.getElementById('acCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let phase = 0;
+    function drawWave() {
+      const w = canvas.width = canvas.clientWidth * window.devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.clearRect(0, 0, w, h);
+      const frequency = parseFloat(freqEl.value);
+      const samples = Math.floor(canvas.clientWidth);
+      const amplitude = (canvas.clientHeight - 20) / 2;
+
+      // Axes
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(10, canvas.clientHeight/2);
+      ctx.lineTo(canvas.clientWidth-10, canvas.clientHeight/2);
+      ctx.moveTo(10, 10);
+      ctx.lineTo(10, canvas.clientHeight-10);
+      ctx.stroke();
+
+      // Sine wave
+      ctx.strokeStyle = '#fde047'; // yellow-400
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x < samples; x++) {
+        const t = (x / samples) * 2 * Math.PI * (frequency / 10) + phase; // scale frequency visually
+        const y = canvas.clientHeight/2 + Math.sin(t) * amplitude * 0.9;
+        if (x === 0) ctx.moveTo(10 + x, y);
+        else ctx.lineTo(10 + x, y);
       }
-      // 8) Generic helpful fallback
-      return generateGeneralAnswer(text);
+      ctx.stroke();
+
+      phase += 0.03;
+      requestAnimationFrame(drawWave);
     }
+    freqEl.addEventListener('input', () => { freqLabel.textContent = freqEl.value; });
+    drawWave();
 
-    function generateGeneralAnswer(text) {
-      const tips = [
-        `Here are the essentials in bullets:`,
-        `Let me outline a simple plan:`,
-        `Key steps you can try:`,
-        `In short:`,
-      ];
-      const plan = `\n- Clarify goal\n- Draft a first version\n- Test with a user\n- Iterate based on feedback`;
-      return `${randomItem(tips)}\n${plan}\n\nYou asked: \`${text}\`. (Remember: this MVP demo uses simple rules.)`;
+    /* Quotes carousel */
+    const quotes = [
+      "The present is theirs; the future, for which I have really worked, is mine.",
+      "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration.",
+      "Our virtues and our failings are inseparable, like force and matter.",
+      "Let the future tell the truth, and evaluate each one according to his work and accomplishments."
+    ];
+    let qi = 0;
+    const qText = document.getElementById('quoteText');
+    const qIdx = document.getElementById('qIdx');
+    const prevQ = document.getElementById('prevQ');
+    const nextQ = document.getElementById('nextQ');
+
+    function renderQuote() {
+      qText.textContent = "“" + quotes[qi] + "”";
+      qIdx.textContent = (qi + 1) + " / " + quotes.length;
     }
-
-    function randomItem(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-    function titleCase(s){ return s.replace(/\w\S*/g, t => t[0].toUpperCase() + t.slice(1)); }
-
-    // --- Events ---
-    els.composer.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const text = els.prompt.value.trim();
-      if (!text) return;
-      els.prompt.value = '';
-      addMessage('user', text);
-
-      const stopTyping = typingIndicator();
-      const latency = 300 + Math.min(1600, Math.round(text.length * 12));
-      setTimeout(() => {
-        const reply = respond(text);
-        stopTyping();
-        addMessage('bot', reply);
-      }, latency);
-    });
-
-    els.clear.addEventListener('click', () => {
-      state.history = [];
-      els.messages.innerHTML = '';
-      addMessage('bot', 'New chat started. I only remember this session. Ask me anything!');
-      els.prompt.focus();
-    });
-
-    // Warm start
-    addMessage('bot', 'Welcome to the ChatGPT MVP demo. Type a question and press **Send** or **Enter**.');
-
-    // Auto-resize textarea
-    els.prompt.addEventListener('input', () => {
-      els.prompt.style.height = 'auto';
-      els.prompt.style.height = Math.min(140, els.prompt.scrollHeight) + 'px';
-    });
-    // Submit on Enter (without Shift)
-    els.prompt.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        els.send.click();
-      }
-    });
+    prevQ.onclick = () => { qi = (qi - 1 + quotes.length) % quotes.length; renderQuote(); };
+    nextQ.onclick = () => { qi = (qi + 1) % quotes.length; renderQuote(); };
+    setInterval(() => { qi = (qi + 1) % quotes.length; renderQuote(); }, 6000);
+    renderQuote();
   </script>
 </body>
 </html>
+
 
